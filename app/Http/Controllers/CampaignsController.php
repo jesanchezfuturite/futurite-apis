@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Session;
+
 use Illuminate\Http\Request;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
