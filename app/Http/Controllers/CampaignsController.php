@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
+use Google\Auth\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Util\V16\ResourceNames;
 
 class CampaignsController extends Controller
@@ -19,22 +20,11 @@ class CampaignsController extends Controller
        if (!file_exists($configPath)) {
            throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
        }
-       $oAuth2Credential = (new OAuth2TokenBuilder())
-        ->fromFile($configPath)
-        ->build();
 
        $this->googleAdsClient = (new GoogleAdsClientBuilder())
            ->fromFile($configPath)
-           ->withOAuth2Credential($oAuth2Credential)
-           ->build();
-    }
-
-    private function getOAuth2Credentials()
-    {
-        try{
-
-
-            $oAuthCredential = (new OAuth2TokenBuilder([
+           ->withOAuth2Credential(
+            (new OAuth2([
                 'clientId' => config('google-ads.client_id'),
                 'developerToken' => config('google-ads.developer_token'),
                 'clientSecret' => config('google-ads.client_secret'),
@@ -43,9 +33,24 @@ class CampaignsController extends Controller
                 'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
                 'scope' => 'https://www.googleapis.com/auth/adwords',
             ]))
-            ->build();
-            return ($oAuthCredential);
+           )
+           ->build();
+    }
 
+    private function getOAuth2Credentials()
+    {
+        try{
+
+
+            return (new OAuth2([
+                'clientId' => config('google-ads.client_id'),
+                'developerToken' => config('google-ads.developer_token'),
+                'clientSecret' => config('google-ads.client_secret'),
+                'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
+                'redirectUri' => route('google.ads.callback'),
+                'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
+                'scope' => 'https://www.googleapis.com/auth/adwords',
+            ]));
         }catch(\Exception $e){
             dd($e);
         }
