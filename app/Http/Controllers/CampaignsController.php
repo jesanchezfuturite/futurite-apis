@@ -90,7 +90,7 @@ class CampaignsController extends Controller
                 segments.date DURING LAST_30_DAYS
         ';
 
-        $response = $gaService->search($customerId, $query);
+        $response = $gaService->search(SearchGoogleAdsRequest::build($customerId, $query));
         $campaigns = [];
 
         foreach ($response->iterateAllElements() as $row) {
