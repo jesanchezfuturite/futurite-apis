@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
+use Google\Auth\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Util\V16\ResourceNames;
 
 class CampaignsController extends Controller
@@ -29,7 +30,9 @@ class CampaignsController extends Controller
     private function getOAuth2Credentials()
     {
         try{
-            return (new OAuth2([
+
+
+            $oAuthCredential = (new OAuth2TokenBuilder([
                 'clientId' => config('google-ads.client_id'),
                 'developerToken' => config('google-ads.developer_token'),
                 'clientSecret' => config('google-ads.client_secret'),
@@ -37,7 +40,10 @@ class CampaignsController extends Controller
                 'redirectUri' => route('google.ads.callback'),
                 'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
                 'scope' => 'https://www.googleapis.com/auth/adwords',
-            ]));
+            ]))
+            ->build();
+            return ($oAuthCredential);
+
         }catch(\Exception $e){
             dd($e);
         }
