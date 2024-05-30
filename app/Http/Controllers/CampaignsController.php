@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
-use Google\Auth\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Util\V16\ResourceNames;
 
 class CampaignsController extends Controller
