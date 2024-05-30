@@ -33,12 +33,6 @@ class CampaignsController extends Controller
             'scope' => 'https://www.googleapis.com/auth/adwords',
         ]);
 
-        // Establecer el refresh token desde la sesión si existe
-
-        if (session('google_ads_refresh_token')) {
-            $oauth2->setRefreshToken(session('google_ads_refresh_token'));
-        }
-
         return $oauth2;
     }
 
@@ -54,16 +48,12 @@ class CampaignsController extends Controller
 
     public function callback(Request $request)
     {
-        dd($request->all());
+
         if ($request->has('code')) {
             $oauth2 = $this->getOAuth2Credentials();
-            $oauth2->setCode($request->get('code'));
+            $oauth2->setCode($request->code);
             $authToken = $oauth2->fetchAuthToken();
             $refreshToken = $authToken['refresh_token'];
-
-            dd($oauth2);
-            // Guardar el refresh token en la sesión
-            session('google_ads_refresh_token', $refreshToken);
 
             return redirect()->route('google.ads.campaigns');
         }
@@ -74,10 +64,7 @@ class CampaignsController extends Controller
     public function getCampaigns()
     {
         $oauth2 = $this->getOAuth2Credentials();
-        if (!session('google_ads_refresh_token')) {
-            dd(session('google_ads_refresh_token'));
-            return redirect()->route('google.ads.authenticate');
-        }
+        dd($oauth2);
 
         $this->googleAdsClient = (new GoogleAdsClientBuilder())
             ->fromFile($this->configPath)
@@ -104,7 +91,9 @@ class CampaignsController extends Controller
                 segments.date DURING LAST_30_DAYS
         ';
 
-        $response = $gaService->search($customerId, $query);
+        $response = $gaService->search(
+            SearchGoogleAdsRequest::build($customerId, $query)
+        );
         $campaigns = [];
 
         foreach ($response->iterateAllElements() as $row) {
