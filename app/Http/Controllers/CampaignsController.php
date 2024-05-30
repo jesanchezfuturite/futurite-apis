@@ -72,6 +72,7 @@ class CampaignsController extends Controller
     {
         $oauth2 = $this->getOAuth2Credentials();
         if (!session('google_ads_refresh_token')) {
+            dd(session('google_ads_refresh_token'));
             return redirect()->route('google.ads.authenticate');
         }
 
