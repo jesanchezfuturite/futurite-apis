@@ -54,7 +54,7 @@ class CampaignsController extends Controller
 
     public function callback(Request $request)
     {
-
+        dd($request->all());
         if ($request->has('code')) {
             $oauth2 = $this->getOAuth2Credentials();
             $oauth2->setCode($request->get('code'));
