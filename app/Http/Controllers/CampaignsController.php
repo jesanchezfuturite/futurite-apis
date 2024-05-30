@@ -5,56 +5,37 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
-use Google\Auth\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Util\V16\ResourceNames;
 
 class CampaignsController extends Controller
 {
     protected $googleAdsClient;
+    protected $configPath;
 
     public function __construct()
     {
-       // Asegúrate de que el archivo de configuración esté siendo leído correctamente
-       $configPath = base_path('config/google-ads.php');
+        $this->configPath = base_path('config/google-ads.yaml');
+        if (!file_exists($this->configPath)) {
+            throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
+        }
 
-       if (!file_exists($configPath)) {
-           throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
-       }
-
-       $this->googleAdsClient = (new GoogleAdsClientBuilder())
-           ->fromFile($configPath)
-           ->withOAuth2Credential(
-            (new OAuth2([
-                'clientId' => config('google-ads.client_id'),
-                'developerToken' => config('google-ads.developer_token'),
-                'clientSecret' => config('google-ads.client_secret'),
-                'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
-                'redirectUri' => route('google.ads.callback'),
-                'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
-                'scope' => 'https://www.googleapis.com/auth/adwords',
-            ]))
-           )
-           ->build();
+        $this->googleAdsClient = (new GoogleAdsClientBuilder())
+            ->fromFile($this->configPath)
+            ->withOAuth2Credential($this->getOAuth2Credentials())
+            ->withDeveloperToken(config('google-ads.developer_token'))
+            ->build();
     }
 
     private function getOAuth2Credentials()
     {
-        try{
-
-
-            return (new OAuth2([
-                'clientId' => config('google-ads.client_id'),
-                'developerToken' => config('google-ads.developer_token'),
-                'clientSecret' => config('google-ads.client_secret'),
-                'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
-                'redirectUri' => route('google.ads.callback'),
-                'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
-                'scope' => 'https://www.googleapis.com/auth/adwords',
-            ]));
-        }catch(\Exception $e){
-            dd($e);
-        }
-
+        return (new OAuth2([
+            'clientId' => config('google-ads.client_id'),
+            'clientSecret' => config('google-ads.client_secret'),
+            'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
+            'redirectUri' => route('google.ads.callback'),
+            'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
+            'scope' => 'https://www.googleapis.com/auth/adwords',
+        ]));
     }
 
     public function authenticate()
@@ -64,16 +45,28 @@ class CampaignsController extends Controller
         if (!request()->has('code')) {
             $authorizationUri = $oauth2->buildFullAuthorizationUri(['access_type' => 'offline']);
             return redirect((string) $authorizationUri);
-        } else {
-            $oauth2->setCode(request()->get('code'));
+        }
+    }
+
+    public function callback(Request $request)
+    {
+        if ($request->has('code')) {
+            $oauth2 = $this->getOAuth2Credentials();
+            $oauth2->setCode($request->get('code'));
             $authToken = $oauth2->fetchAuthToken();
-            // Store the refresh token securely
             $refreshToken = $authToken['refresh_token'];
-            // Save the refresh token in your configuration or environment
-            // For example, you can manually add it to your .env file or use a secure storage solution
-            // config(['google-ads.refresh_token' => $refreshToken]);
+
+            // Guardar el refresh token de manera segura
+            // Por ejemplo, puedes guardarlo en el archivo .env o en una base de datos segura
+            // Aquí actualizamos el archivo google-ads.yaml directamente
+            $config = yaml_parse_file($this->configPath);
+            $config['refresh_token'] = $refreshToken;
+            file_put_contents($this->configPath, yaml_emit($config));
+
             return redirect()->route('google.ads.campaigns');
         }
+
+        return redirect()->route('google.ads.authenticate');
     }
 
     public function getCampaigns()
