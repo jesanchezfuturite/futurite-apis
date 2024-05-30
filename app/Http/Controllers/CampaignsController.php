@@ -15,7 +15,7 @@ class CampaignsController extends Controller
     public function __construct()
     {
        // Asegúrate de que el archivo de configuración esté siendo leído correctamente
-       $configPath = base_path('config/google-ads.yaml');
+       $configPath = base_path('config/google-ads.php');
 
        if (!file_exists($configPath)) {
            throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
