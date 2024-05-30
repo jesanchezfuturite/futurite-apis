@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Session;
+use Log;
 
 use Illuminate\Http\Request;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
@@ -53,12 +54,14 @@ class CampaignsController extends Controller
 
     public function callback(Request $request)
     {
+
         if ($request->has('code')) {
             $oauth2 = $this->getOAuth2Credentials();
             $oauth2->setCode($request->get('code'));
             $authToken = $oauth2->fetchAuthToken();
             $refreshToken = $authToken['refresh_token'];
 
+            dd($oauth2);
             // Guardar el refresh token en la sesión
             session('google_ads_refresh_token', $refreshToken);
 
