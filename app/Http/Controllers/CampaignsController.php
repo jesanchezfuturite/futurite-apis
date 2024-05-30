@@ -7,7 +7,7 @@ use Google\Ads\GoogleAds\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
 use Google\Ads\GoogleAds\Util\V10\ResourceNames;
 
-class GoogleAdsController extends Controller
+class CampaignsController extends Controller
 {
     protected $googleAdsClient;
 
