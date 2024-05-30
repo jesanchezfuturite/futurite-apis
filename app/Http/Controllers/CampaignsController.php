@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Google\Ads\GoogleAds\GoogleAdsClientBuilder;
+use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
-use Google\Ads\GoogleAds\Util\V10\ResourceNames;
+use Google\Ads\GoogleAds\Util\V16\ResourceNames;
 
 class CampaignsController extends Controller
 {
