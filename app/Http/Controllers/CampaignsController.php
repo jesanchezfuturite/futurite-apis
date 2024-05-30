@@ -33,7 +33,8 @@ class CampaignsController extends Controller
         ]);
 
         // Establecer el refresh token desde la sesión si existe
-        if (Session::has('google_ads_refresh_token')) {
+
+        if (session('google_ads_refresh_token')) {
             $oauth2->setRefreshToken(Session::get('google_ads_refresh_token'));
         }
 
@@ -59,7 +60,7 @@ class CampaignsController extends Controller
             $refreshToken = $authToken['refresh_token'];
 
             // Guardar el refresh token en la sesión
-            Session::put('google_ads_refresh_token', $refreshToken);
+            session('google_ads_refresh_token', $refreshToken);
 
             return redirect()->route('google.ads.campaigns');
         }
@@ -70,7 +71,7 @@ class CampaignsController extends Controller
     public function getCampaigns()
     {
         $oauth2 = $this->getOAuth2Credentials();
-        if (!Session::has('google_ads_refresh_token')) {
+        if (!session('google_ads_refresh_token')) {
             return redirect()->route('google.ads.authenticate');
         }
 
