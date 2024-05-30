@@ -29,7 +29,6 @@ class CampaignsController extends Controller
     private function getOAuth2Credentials()
     {
         try{
-            dd(config('google-ads.developer_token'));
             return (new OAuth2([
                 'clientId' => config('google-ads.client_id'),
                 'developerToken' => config('google-ads.developer_token'),
