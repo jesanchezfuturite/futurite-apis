@@ -19,10 +19,13 @@ class CampaignsController extends Controller
        if (!file_exists($configPath)) {
            throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
        }
+       $oAuth2Credential = (new OAuth2TokenBuilder())
+        ->fromFile($configPath)
+        ->build();
 
        $this->googleAdsClient = (new GoogleAdsClientBuilder())
            ->fromFile($configPath)
-           ->withOAuth2Credential($this->getOAuth2Credentials())
+           ->withOAuth2Credential($oAuth2Credential)
            ->build();
     }
 
