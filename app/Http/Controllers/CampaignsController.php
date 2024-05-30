@@ -13,10 +13,17 @@ class CampaignsController extends Controller
 
     public function __construct()
     {
-        $this->googleAdsClient = (new GoogleAdsClientBuilder())
-            ->fromFile(config_path('google-ads.yaml'))
-            ->withOAuth2Credential($this->getOAuth2Credentials())
-            ->build();
+       // Asegúrate de que el archivo de configuración esté siendo leído correctamente
+       $configPath = base_path('config/google-ads.yaml');
+
+       if (!file_exists($configPath)) {
+           throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
+       }
+
+       $this->googleAdsClient = (new GoogleAdsClientBuilder())
+           ->fromFile($configPath)
+           ->withOAuth2Credential($this->getOAuth2Credentials())
+           ->build();
     }
 
     private function getOAuth2Credentials()
