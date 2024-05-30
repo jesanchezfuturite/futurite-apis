@@ -17,27 +17,25 @@ class CampaignsController extends Controller
     public function __construct()
     {
         $this->configPath = base_path('config/google-ads.yaml');
-        if (!file_exists($this->configPath)) {
-            throw new \Exception("El archivo de configuración google-ads.yaml no existe en el directorio config.");
-        }
-
-        $this->googleAdsClient = (new GoogleAdsClientBuilder())
-            ->fromFile($this->configPath)
-            ->withOAuth2Credential($this->getOAuth2Credentials())
-            ->withDeveloperToken(config('google-ads.developer_token'))
-            ->build();
     }
 
     private function getOAuth2Credentials()
     {
-        return (new OAuth2([
+        $oauth2 = new OAuth2([
             'clientId' => config('google-ads.client_id'),
             'clientSecret' => config('google-ads.client_secret'),
             'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
             'redirectUri' => route('google.ads.callback'),
             'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
             'scope' => 'https://www.googleapis.com/auth/adwords',
-        ]));
+        ]);
+
+        // Establecer el refresh token desde la sesión si existe
+        if (Session::has('google_ads_refresh_token')) {
+            $oauth2->setRefreshToken(Session::get('google_ads_refresh_token'));
+        }
+
+        return $oauth2;
     }
 
     public function authenticate()
@@ -58,12 +56,8 @@ class CampaignsController extends Controller
             $authToken = $oauth2->fetchAuthToken();
             $refreshToken = $authToken['refresh_token'];
 
-            // Guardar el refresh token de manera segura
-            // Por ejemplo, puedes guardarlo en el archivo .env o en una base de datos segura
-            // Aquí actualizamos el archivo google-ads.yaml directamente
-            $config = yaml_parse_file($this->configPath);
-            $config['refresh_token'] = $refreshToken;
-            file_put_contents($this->configPath, yaml_emit($config));
+            // Guardar el refresh token en la sesión
+            Session::put('google_ads_refresh_token', $refreshToken);
 
             return redirect()->route('google.ads.campaigns');
         }
@@ -73,6 +67,17 @@ class CampaignsController extends Controller
 
     public function getCampaigns()
     {
+        $oauth2 = $this->getOAuth2Credentials();
+        if (!Session::has('google_ads_refresh_token')) {
+            return redirect()->route('google.ads.authenticate');
+        }
+
+        $this->googleAdsClient = (new GoogleAdsClientBuilder())
+            ->fromFile($this->configPath)
+            ->withOAuth2Credential($oauth2)
+            ->withDeveloperToken(config('google-ads.developer_token'))
+            ->build();
+
         $customerId = config('google-ads.login_customer_id');
         $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
 
@@ -92,7 +97,7 @@ class CampaignsController extends Controller
                 segments.date DURING LAST_30_DAYS
         ';
 
-        $response = $gaService->searchStream(SearchGoogleAdsStreamRequest::build($customerId, $query));
+        $response = $gaService->search($customerId, $query);
         $campaigns = [];
 
         foreach ($response->iterateAllElements() as $row) {
