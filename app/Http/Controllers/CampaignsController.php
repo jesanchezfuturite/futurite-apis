@@ -28,14 +28,19 @@ class CampaignsController extends Controller
 
     private function getOAuth2Credentials()
     {
-        return (new OAuth2([
-            'clientId' => config('google-ads.client_id'),
-            'clientSecret' => config('google-ads.client_secret'),
-            'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
-            'redirectUri' => route('google.ads.callback'),
-            'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
-            'scope' => 'https://www.googleapis.com/auth/adwords',
-        ]));
+        try{
+            return (new OAuth2([
+                'clientId' => config('google-ads.client_id'),
+                'clientSecret' => config('google-ads.client_secret'),
+                'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
+                'redirectUri' => route('google.ads.callback'),
+                'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
+                'scope' => 'https://www.googleapis.com/auth/adwords',
+            ]));
+        }catch(\Exception $e){
+            dd($e);
+        }
+
     }
 
     public function authenticate()
