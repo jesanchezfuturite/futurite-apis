@@ -31,6 +31,7 @@ class CampaignsController extends Controller
         try{
             return (new OAuth2([
                 'clientId' => config('google-ads.client_id'),
+                'developerToken' => config('google-ads.developer_token'),
                 'clientSecret' => config('google-ads.client_secret'),
                 'authorizationUri' => 'https://accounts.google.com/o/oauth2/auth',
                 'redirectUri' => route('google.ads.callback'),
