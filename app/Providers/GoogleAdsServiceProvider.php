@@ -10,7 +10,7 @@ use Google\Auth\OAuth2;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 
-use Log:
+use Log;
 
 class GoogleAdsServiceProvider extends ServiceProvider
 {
