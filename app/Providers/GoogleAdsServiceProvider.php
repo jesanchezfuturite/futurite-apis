@@ -39,7 +39,8 @@ class GoogleAdsServiceProvider extends ServiceProvider
                 'authorizationUri' => $webCredentials['auth_uri'],
                 'tokenCredentialUri' => $webCredentials['token_uri'],
                 'redirectUri' => $webCredentials['redirect_uris'][0],
-                'scope' => 'https://www.googleapis.com/auth/adwords'
+                'scope' => 'https://www.googleapis.com/auth/adwords',
+                'access_type' => 'offline' // Asegúrate de solicitar acceso offline
             ]);
 
             $token = $this->loadAccessToken();
@@ -84,4 +85,3 @@ class GoogleAdsServiceProvider extends ServiceProvider
         //
     }
 }
-
