@@ -38,7 +38,7 @@ class GoogleAdsController extends Controller
         if (strlen($code) > 0) {
             Log::info("[GoogleAdsController@handleGoogleAdsCallback]  Codigo verificado");
 
-            $oAuth2->setCode($request->input('code'));
+            $oAuth2->setCode($code);
             $authToken = $oAuth2->fetchAuthToken();
 
             // Verificar y guardar el refresh token si está presente
