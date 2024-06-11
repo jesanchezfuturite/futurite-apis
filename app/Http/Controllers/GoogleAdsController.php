@@ -40,6 +40,7 @@ class GoogleAdsController extends Controller
 
             $oAuth2->setCode($code);
             $authToken = $oAuth2->fetchAuthToken();
+            Log::info("[GoogleAdsController@handleGoogleAdsCallback]  authToken - " json_encode($authToken) );
 
             // Verificar y guardar el refresh token si está presente
             if (!isset($authToken['refresh_token'])) {
