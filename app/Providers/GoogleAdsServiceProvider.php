@@ -1,5 +1,5 @@
 <?php
-/*
+
 
 // app/Providers/GoogleAdsServiceProvider.php
 
@@ -103,4 +103,4 @@ class GoogleAdsServiceProvider extends ServiceProvider
         //
     }
 }
-*/
+
