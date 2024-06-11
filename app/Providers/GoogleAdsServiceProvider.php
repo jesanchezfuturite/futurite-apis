@@ -1,4 +1,5 @@
 <?php
+/*
 
 // app/Providers/GoogleAdsServiceProvider.php
 
@@ -15,54 +16,70 @@ class GoogleAdsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(GoogleAdsClient::class, function ($app) {
-            $jsonKeyFilePath = storage_path('app/google-ads/credentials.json');
-
-            if (!file_exists($jsonKeyFilePath)) {
-                throw new \Exception('Google Ads credentials file not found.');
+            if (app()->environment('testing')) {
+                // En el entorno de pruebas, devuelve un mock o una instancia simulada
+                return $this->createMockGoogleAdsClient();
             }
 
-            $credentials = json_decode(file_get_contents($jsonKeyFilePath), true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Error decoding JSON credentials file: ' . json_last_error_msg());
-            }
-
-            if (!isset($credentials['web'])) {
-                throw new \Exception('Invalid credentials format. "web" key not found.');
-            }
-
-            $webCredentials = $credentials['web'];
-
-            $oAuth2 = new OAuth2([
-                'clientId' => $webCredentials['client_id'],
-                'clientSecret' => $webCredentials['client_secret'],
-                'authorizationUri' => $webCredentials['auth_uri'],
-                'tokenCredentialUri' => $webCredentials['token_uri'],
-                'redirectUri' => $webCredentials['redirect_uris'][0],
-                'scope' => 'https://www.googleapis.com/auth/adwords',
-                'access_type' => 'offline', // Asegúrate de incluir access_type=offline
-                'approval_prompt' => 'force' // Forzar el prompt de aprobación para obtener el refresh token
-            ]);
-
-            $token = $this->loadAccessToken();
-            if ($token) {
-                $oAuth2->updateToken($token);
-
-                // Renovar el token si es necesario
-                if ($oAuth2->isAccessTokenExpired()) {
-                    $oAuth2->refreshToken($token['refresh_token']);
-                    $this->saveAccessToken($oAuth2->getToken());
-                }
-            } else {
-                $authUrl = $oAuth2->buildFullAuthorizationUri();
-                throw new \Exception("Please visit the following URL to authorize your application: $authUrl");
-            }
-
-            return (new GoogleAdsClientBuilder())
-                ->withOAuth2Credential($oAuth2)
-                ->withDeveloperToken($webCredentials['developer_token'])
-                ->build();
+            return $this->createGoogleAdsClient();
         });
+    }
+
+    public function createGoogleAdsClient()
+    {
+        $jsonKeyFilePath = storage_path('app/google-ads/credentials.json');
+
+        if (!file_exists($jsonKeyFilePath)) {
+            throw new \Exception('Google Ads credentials file not found.');
+        }
+
+        $credentials = json_decode(file_get_contents($jsonKeyFilePath), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('Error decoding JSON credentials file: ' . json_last_error_msg());
+        }
+
+        if (!isset($credentials['web'])) {
+            throw new \Exception('Invalid credentials format. "web" key not found.');
+        }
+
+        $webCredentials = $credentials['web'];
+
+        $oAuth2 = new OAuth2([
+            'clientId' => $webCredentials['client_id'],
+            'clientSecret' => $webCredentials['client_secret'],
+            'authorizationUri' => $webCredentials['auth_uri'],
+            'tokenCredentialUri' => $webCredentials['token_uri'],
+            'redirectUri' => $webCredentials['redirect_uris'][0],
+            'scope' => 'https://www.googleapis.com/auth/adwords',
+            'access_type' => 'offline', // Asegúrate de incluir access_type=offline
+            'approval_prompt' => 'force' // Forzar el prompt de aprobación para obtener el refresh token
+        ]);
+
+        $token = $this->loadAccessToken();
+        if ($token) {
+            $oAuth2->updateToken($token);
+
+            // Renovar el token si es necesario
+            if ($oAuth2->isAccessTokenExpired()) {
+                $oAuth2->refreshToken($token['refresh_token']);
+                $this->saveAccessToken($oAuth2->getToken());
+            }
+        } else {
+            $authUrl = $oAuth2->buildFullAuthorizationUri();
+            throw new \Exception("Please visit the following URL to authorize your application: $authUrl");
+        }
+
+        return (new GoogleAdsClientBuilder())
+            ->withOAuth2Credential($oAuth2)
+            ->withDeveloperToken($webCredentials['developer_token'])
+            ->build();
+    }
+
+    private function createMockGoogleAdsClient()
+    {
+        // Crea y devuelve un mock del cliente de Google Ads para las pruebas
+        return \Mockery::mock(GoogleAdsClient::class);
     }
 
     private function loadAccessToken()
@@ -86,3 +103,4 @@ class GoogleAdsServiceProvider extends ServiceProvider
         //
     }
 }
+*/
