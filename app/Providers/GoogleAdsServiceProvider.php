@@ -58,6 +58,7 @@ class GoogleAdsServiceProvider extends ServiceProvider
         ]);
 
         $token = $this->loadAccessToken();
+        Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - token " . json_enconde($token) );
         if ($token) {
             $oAuth2->updateToken($token);
 
