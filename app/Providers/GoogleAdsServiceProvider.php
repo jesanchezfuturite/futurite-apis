@@ -10,6 +10,8 @@ use Google\Auth\OAuth2;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 
+use Log:
+
 class GoogleAdsServiceProvider extends ServiceProvider
 {
     public function register()
@@ -51,6 +53,9 @@ class GoogleAdsServiceProvider extends ServiceProvider
         ]);
 
         $token = $this->loadAccessToken();
+
+        Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - TOKEN " . json_encode($token) );
+
         if ($token) {
             $oAuth2->updateToken($token);
 
