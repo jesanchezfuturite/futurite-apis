@@ -12,6 +12,8 @@ class GoogleAdsController extends Controller
 {
     public function handleGoogleAdsCallback(Request $request)
     {
+
+        Log::info("[GoogleAdsController@handleGoogleAdsCallback]");
         $jsonKeyFilePath = storage_path('app/google-ads/credentials.json');
         $credentials = json_decode(file_get_contents($jsonKeyFilePath), true);
 
@@ -27,6 +29,8 @@ class GoogleAdsController extends Controller
             'access_type' => 'offline', // Asegúrate de incluir access_type=offline
             'approval_prompt' => 'force' // Forzar el prompt de aprobación para obtener el refresh token
         ]);
+
+        Log::info("[GoogleAdsController@handleGoogleAdsCallback] REQUEST " . json_encode($request->all()));
 
         if ($request->has('code')) {
             $oAuth2->setCode($request->input('code'));
