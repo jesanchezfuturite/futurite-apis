@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClient;
-use Google\Ads\GoogleAds\V16\Services\GoogleAdsServiceClient;
+use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 
 class ListGoogleAdsCustomers extends Command
 {
@@ -53,7 +53,12 @@ class ListGoogleAdsCustomers extends Command
                     customer_client.level <= 1
             ';
 
-            $searchResponse = $googleAdsServiceClient->search($customerResourceName, $query);
+            $searchRequest = new SearchGoogleAdsRequest([
+                'customer_id' => $customerResourceName,
+                'query' => $query,
+            ]);
+
+            $searchResponse = $googleAdsServiceClient->search($searchRequest);
 
             foreach ($searchResponse->getIterator() as $googleAdsRow) {
                 $customerClient = $googleAdsRow->getCustomerClient();
