@@ -1,6 +1,5 @@
 <?php
 
-
 // app/Providers/GoogleAdsServiceProvider.php
 
 namespace App\Providers;
@@ -10,18 +9,12 @@ use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
-use Log;
 
 class GoogleAdsServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->app->singleton(GoogleAdsClient::class, function ($app) {
-            if (app()->environment('testing')) {
-                // En el entorno de pruebas, devuelve un mock o una instancia simulada
-                return $this->createMockGoogleAdsClient();
-            }
-
             return $this->createGoogleAdsClient();
         });
     }
@@ -53,17 +46,16 @@ class GoogleAdsServiceProvider extends ServiceProvider
             'tokenCredentialUri' => $webCredentials['token_uri'],
             'redirectUri' => $webCredentials['redirect_uris'][0],
             'scope' => 'https://www.googleapis.com/auth/adwords',
-            'access_type' => 'offline', // Asegúrate de incluir access_type=offline
-            'approval_prompt' => 'force' // Forzar el prompt de aprobación para obtener el refresh token
+            'access_type' => 'offline', // Ensure access_type=offline is included
+            'approval_prompt' => 'force' // Force the prompt to get the refresh token
         ]);
 
         $token = $this->loadAccessToken();
-        Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - token " . json_encode($token) );
         if ($token) {
             $oAuth2->updateToken($token);
 
-            // Renovar el token si es necesario
-            if ($oAuth2->isAccessTokenExpired()) {
+            // Check if the token is expired
+            if ($oAuth2->isExpired()) {
                 $oAuth2->refreshToken($token['refresh_token']);
                 $this->saveAccessToken($oAuth2->getToken());
             }
@@ -78,17 +70,11 @@ class GoogleAdsServiceProvider extends ServiceProvider
             ->build();
     }
 
-    private function createMockGoogleAdsClient()
-    {
-        // Crea y devuelve un mock del cliente de Google Ads para las pruebas
-        return \Mockery::mock(GoogleAdsClient::class);
-    }
-
     private function loadAccessToken()
     {
-        // Cargar el token de acceso desde un almacenamiento seguro
-        if (Storage::disk('local')->exists('google-ads-token.json')) {
-            return json_decode(Storage::disk('local')->get('google-ads-token.json'), true);
+        // Load the access token from secure storage
+        if (Storage::disk('local')->exists('google-ads/google-ads-token.json')) {
+            return json_decode(Storage::disk('local')->get('google-ads/google-ads-token.json'), true);
         }
 
         return null;
@@ -96,13 +82,8 @@ class GoogleAdsServiceProvider extends ServiceProvider
 
     private function saveAccessToken(array $token)
     {
-        try{
-            // Guardar el token de acceso en un almacenamiento seguro
-            Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($token));
-        }catch(\Exception $e){
-            Log::info("GoogleAdsServiceProvider@saveAccessToken - " .  json_encode($e));
-        }
-
+        // Save the access token to secure storage
+        Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($token));
     }
 
     public function boot()
@@ -110,4 +91,3 @@ class GoogleAdsServiceProvider extends ServiceProvider
         //
     }
 }
-
