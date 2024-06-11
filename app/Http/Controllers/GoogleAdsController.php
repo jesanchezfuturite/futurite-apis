@@ -8,6 +8,8 @@ use Google\Auth\OAuth2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+use Log;
+
 class GoogleAdsController extends Controller
 {
     public function handleGoogleAdsCallback(Request $request)
