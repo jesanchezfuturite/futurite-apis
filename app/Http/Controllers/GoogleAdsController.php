@@ -33,6 +33,7 @@ class GoogleAdsController extends Controller
         ]);
 
         Log::info("[GoogleAdsController@handleGoogleAdsCallback] REQUEST " . json_encode($request->all()));
+        Log::info("[GoogleAdsController@handleGoogleAdsCallback] Code " . json_encode($request->code));
 
         if ($request->code) {
             $oAuth2->setCode($request->input('code'));
