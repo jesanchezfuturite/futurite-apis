@@ -10,6 +10,7 @@ use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
+use Log;
 
 class GoogleAdsServiceProvider extends ServiceProvider
 {
@@ -94,8 +95,13 @@ class GoogleAdsServiceProvider extends ServiceProvider
 
     private function saveAccessToken(array $token)
     {
-        // Guardar el token de acceso en un almacenamiento seguro
-        Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($token));
+        try{
+            // Guardar el token de acceso en un almacenamiento seguro
+            Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($token));
+        }catch(\Exception $e){
+            Log::info("GoogleAdsServiceProvider@saveAccessToken - " .  json_encode($e));
+        }
+
     }
 
     public function boot()
