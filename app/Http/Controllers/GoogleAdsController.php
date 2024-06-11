@@ -24,7 +24,8 @@ class GoogleAdsController extends Controller
             'tokenCredentialUri' => $webCredentials['token_uri'],
             'redirectUri' => $webCredentials['redirect_uris'][0],
             'scope' => 'https://www.googleapis.com/auth/adwords',
-            'accessType' => 'offline' // Asegurarse de incluir access_type=offline
+            'access_type' => 'offline', // Asegúrate de incluir access_type=offline
+            'approval_prompt' => 'force' // Forzar el prompt de aprobación para obtener el refresh token
         ]);
 
         if ($request->has('code')) {

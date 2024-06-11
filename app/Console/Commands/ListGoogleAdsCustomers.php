@@ -35,5 +35,6 @@ class ListGoogleAdsCustomers extends Command
         }
 
         return 0;
+
     }
 }
