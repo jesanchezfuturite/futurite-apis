@@ -44,7 +44,7 @@ class GoogleAdsController extends Controller
             Log::info("[GoogleAdsController@handleGoogleAdsCallback]  authToken - " . gettype($authToken) );
 
             // Verificar y guardar el refresh token si está presente
-            if (!isset($authToken['refresh_token'])) {
+            if (!isset($authToken['access_token'])) {
                 return redirect('/')->with('error', 'Failed to obtain refresh token. Please authorize the application again.');
             }
 
