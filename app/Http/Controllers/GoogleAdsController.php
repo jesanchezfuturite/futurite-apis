@@ -24,12 +24,17 @@ class GoogleAdsController extends Controller
             'tokenCredentialUri' => $webCredentials['token_uri'],
             'redirectUri' => $webCredentials['redirect_uris'][0],
             'scope' => 'https://www.googleapis.com/auth/adwords',
-            'access_type' => 'offline'
+            'accessType' => 'offline' // Asegurarse de incluir access_type=offline
         ]);
 
         if ($request->has('code')) {
             $oAuth2->setCode($request->input('code'));
             $authToken = $oAuth2->fetchAuthToken();
+
+            // Verificar y guardar el refresh token si está presente
+            if (!isset($authToken['refresh_token'])) {
+                return redirect()->route('home')->with('error', 'Failed to obtain refresh token. Please authorize the application again.');
+            }
 
             // Guarda el token de acceso y el token de actualización
             Storage::disk('local')->put('google-ads-token.json', json_encode($authToken));
@@ -40,5 +45,3 @@ class GoogleAdsController extends Controller
         return redirect()->route('home')->with('error', 'Failed to authenticate with Google Ads.');
     }
 }
-
-
