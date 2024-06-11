@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClient;
-use Google\Ads\GoogleAds\V16\Services\ListAccessibleCustomersRequest;
-use Google\Ads\GoogleAds\V16\Services\GoogleAdsServiceClient;
+use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 
 class ListGoogleAdsCustomers extends Command
 {
@@ -26,7 +25,7 @@ class ListGoogleAdsCustomers extends Command
         $customerServiceClient = $this->googleAdsClient->getCustomerServiceClient();
 
         // Crear una instancia de ListAccessibleCustomersRequest
-        $request = new ListAccessibleCustomersRequest();
+        $request = new \Google\Ads\GoogleAds\V16\Services\ListAccessibleCustomersRequest();
 
         // Llamar al método listAccessibleCustomers con el objeto request
         $response = $customerServiceClient->listAccessibleCustomers($request);
@@ -35,40 +34,48 @@ class ListGoogleAdsCustomers extends Command
         $googleAdsServiceClient = $this->googleAdsClient->getGoogleAdsServiceClient();
 
         foreach ($response->getResourceNames() as $customerResourceName) {
-            $query = "
+            $query = '
                 SELECT
-                    customer.id,
-                    customer.descriptive_name,
-                    customer.currency_code,
-                    customer.time_zone,
-                    customer.manager,
-                    customer.test_account,
-                    customer.resource_name,
-                    customer.applied_labels,
                     customer_client.client_customer,
                     customer_client.level,
-                    customer_client.hidden
-                FROM customer_client
-                WHERE customer_client.client_customer = '$customerResourceName'
-            ";
+                    customer_client.manager,
+                    customer_client.descriptive_name,
+                    customer_client.currency_code,
+                    customer_client.time_zone,
+                    customer_client.id,
+                    customer_client.hidden,
+                    customer_client.resource_name,
+                    customer_client.test_account,
+                    customer_client.applied_labels
+                FROM
+                    customer_client
+                WHERE
+                    customer_client.level <= 1
+            ';
 
-            $searchResponse = $googleAdsServiceClient->search($customerResourceName, $query);
+            // Crear una instancia de SearchGoogleAdsRequest
+            $searchRequest = new SearchGoogleAdsRequest([
+                'customerId' => $customerResourceName,
+                'query' => $query,
+            ]);
+
+            // Llamar al método search con el objeto SearchGoogleAdsRequest
+            $searchResponse = $googleAdsServiceClient->search($searchRequest);
 
             foreach ($searchResponse->getIterator() as $googleAdsRow) {
-                $customer = $googleAdsRow->getCustomer();
                 $customerClient = $googleAdsRow->getCustomerClient();
 
-                $this->info("Customer ID: " . $customer->getId());
-                $this->info("Descriptive Name: " . $customer->getDescriptiveName());
                 $this->info("Client Customer: " . $customerClient->getClientCustomer());
                 $this->info("Level: " . $customerClient->getLevel());
-                $this->info("Manager: " . ($customer->getManager() ? 'Yes' : 'No'));
-                $this->info("Currency Code: " . $customer->getCurrencyCode());
-                $this->info("Time Zone: " . $customer->getTimeZone());
+                $this->info("Manager: " . ($customerClient->getManager() ? 'Yes' : 'No'));
+                $this->info("Descriptive Name: " . $customerClient->getDescriptiveName());
+                $this->info("Currency Code: " . $customerClient->getCurrencyCode());
+                $this->info("Time Zone: " . $customerClient->getTimeZone());
+                $this->info("Internal ID: " . $customerClient->getId());
                 $this->info("Hidden: " . ($customerClient->getHidden() ? 'Yes' : 'No'));
-                $this->info("Resource Name: " . $customer->getResourceName());
-                $this->info("Test Account: " . ($customer->getTestAccount() ? 'Yes' : 'No'));
-                $this->info("Applied Labels: " . implode(", ", iterator_to_array($customer->getAppliedLabels())));
+                $this->info("Resource Name: " . $customerClient->getResourceName());
+                $this->info("Test Account: " . ($customerClient->getTestAccount() ? 'Yes' : 'No'));
+                $this->info("Applied Labels: " . implode(", ", iterator_to_array($customerClient->getAppliedLabels())));
 
                 $this->info("-------------------------------");
             }
