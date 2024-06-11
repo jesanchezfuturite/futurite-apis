@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClient;
 use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
+use Log;
 
 class ListGoogleAdsCustomers extends Command
 {
@@ -32,6 +33,8 @@ class ListGoogleAdsCustomers extends Command
 
         // Obtener el servicio GoogleAdsServiceClient para realizar consultas
         $googleAdsServiceClient = $this->googleAdsClient->getGoogleAdsServiceClient();
+
+        Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListGoogleAdsCustomers response " . json_encode($response) );
 
         foreach ($response->getResourceNames() as $customerResourceName) {
             $query = '
