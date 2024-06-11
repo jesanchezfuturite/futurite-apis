@@ -38,7 +38,7 @@ class GoogleAdsController extends Controller
             }
 
             // Guarda el token de acceso y el token de actualización
-            Storage::disk('local')->put('google-ads-token.json', json_encode($authToken));
+            Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($authToken));
 
             return redirect()->route('home')->with('success', 'Google Ads authenticated successfully!');
         }

@@ -68,8 +68,8 @@ class GoogleAdsServiceProvider extends ServiceProvider
     private function loadAccessToken()
     {
         // Cargar el token de acceso desde un almacenamiento seguro
-        if (Storage::disk('local')->exists('google-ads-token.json')) {
-            return json_decode(Storage::disk('local')->get('google-ads-token.json'), true);
+        if (Storage::disk('local')->exists('google-ads/google-ads-token.json')) {
+            return json_decode(Storage::disk('local')->get('google-ads/google-ads-token.json'), true);
         }
 
         return null;
@@ -78,7 +78,7 @@ class GoogleAdsServiceProvider extends ServiceProvider
     private function saveAccessToken(array $token)
     {
         // Guardar el token de acceso en un almacenamiento seguro
-        Storage::disk('local')->put('google-ads-token.json', json_encode($token));
+        Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($token));
     }
 
     public function boot()
