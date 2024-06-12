@@ -34,13 +34,11 @@ class ListGoogleAdsCustomers extends Command
             $response = $customerServiceClient->listAccessibleCustomers($listAccessibleCustomersRequest);
 
             // Obtener el servicio GoogleAdsServiceClient para realizar consultas
-            // $googleAdsServiceClient = $this->googleAdsClient->getGoogleAdsServiceClient();
-            $customerId = config('google-ads.login_customer_id');
+            $customerId = $this->sanitizeCustomerId(config('google-ads.login_customer_id'));
             $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
 
             Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers customerId " . json_encode($customerId));
             Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers gaService " . json_encode($gaService));
-
 
             $query = '
                 SELECT
@@ -64,14 +62,12 @@ class ListGoogleAdsCustomers extends Command
             $response = $gaService->search(
                 SearchGoogleAdsRequest::build($customerId, $query)
             );
+
             Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers response " . json_encode($response));
             $accounts = [];
 
-           // $this->customers->truncate();
-
             foreach ($response->iterateAllElements() as $row) {
                 Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers row " . json_encode($row));
-
 
                 $info = [
                     'client_customer' => $row->getCustomerClient()->getClientCustomer(),
@@ -87,70 +83,16 @@ class ListGoogleAdsCustomers extends Command
                     'applied_labels' => json_encode($row->getCustomerClient()->getAppliedLabels())
                 ];
 
-                try{
-                    $accounts []= $info;
-                }catch(\Exception $e){
+                try {
+                    $accounts[] = $info;
+                } catch (\Exception $e) {
                     dd($e->getMessage());
                 }
-
             }
 
             dd($accounts);
 
             return response()->json('fin proceso');
-
-            /*
-            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers response " . json_encode($response));
-
-            foreach ($response->getResourceNames() as $customerResourceName) {
-                $query = '
-                    SELECT
-                        customer_client.client_customer,
-                        customer_client.level,
-                        customer_client.manager,
-                        customer_client.descriptive_name,
-                        customer_client.currency_code,
-                        customer_client.time_zone,
-                        customer_client.id,
-                        customer_client.hidden,
-                        customer_client.resource_name,
-                        customer_client.test_account,
-                        customer_client.applied_labels
-                    FROM
-                        customer_client
-                    WHERE
-                        customer_client.level <= 1
-                ';
-
-                // Crear una instancia de SearchGoogleAdsRequest
-                $searchRequest = new SearchGoogleAdsRequest([
-                    'customerId' => $this->extractCustomerId($customerResourceName),
-                    'query' => $query,
-                ]);
-
-                // Llamar al método search con el objeto SearchGoogleAdsRequest
-                $searchResponse = $googleAdsServiceClient->search($searchRequest);
-
-                foreach ($searchResponse->getIterator() as $googleAdsRow) {
-                    $customerClient = $googleAdsRow->getCustomerClient();
-
-                    $this->info("Client Customer: " . $customerClient->getClientCustomer());
-                    $this->info("Level: " . $customerClient->getLevel());
-                    $this->info("Manager: " . ($customerClient->getManager() ? 'Yes' : 'No'));
-                    $this->info("Descriptive Name: " . $customerClient->getDescriptiveName());
-                    $this->info("Currency Code: " . $customerClient->getCurrencyCode());
-                    $this->info("Time Zone: " . $customerClient->getTimeZone());
-                    $this->info("Internal ID: " . $customerClient->getId());
-                    $this->info("Hidden: " . ($customerClient->getHidden() ? 'Yes' : 'No'));
-                    $this->info("Resource Name: " . $customerClient->getResourceName());
-                    $this->info("Test Account: " . ($customerClient->getTestAccount() ? 'Yes' : 'No'));
-                    $this->info("Applied Labels: " . implode(", ", iterator_to_array($customerClient->getAppliedLabels())));
-
-                    $this->info("-------------------------------");
-                }
-            }*/
-
-            return 0;
 
         } catch (ApiException $e) {
             Log::error('ApiException occurred: ' . $e->getMessage());
@@ -161,9 +103,8 @@ class ListGoogleAdsCustomers extends Command
         }
     }
 
-    private function extractCustomerId($customerResourceName)
+    private function sanitizeCustomerId($customerId)
     {
-        $parts = explode('/', $customerResourceName);
-        return end($parts);
+        return str_replace('-', '', $customerId);
     }
 }
