@@ -35,7 +35,7 @@ class ListGoogleAdsCustomers extends Command
 
             // Obtener el servicio GoogleAdsServiceClient para realizar consultas
             // $googleAdsServiceClient = $this->googleAdsClient->getGoogleAdsServiceClient();
-
+            $customerId = config('google-ads.login_customer_id');
             $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
 
             $query = '
