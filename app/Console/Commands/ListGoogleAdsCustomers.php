@@ -91,14 +91,14 @@ class ListGoogleAdsCustomers extends Command
                 ];
 
                 try {
-                    dd($info);//$this->customerRepo->create($info);
+                    $this->customerRepo->create($info);
                 } catch (\Exception $e) {
                     Log::error('Exception occurred during updating customers: ' . $e->getMessage());
                     return 1;
                 }
             }
 
-            return response()->json('fin proceso');
+            return 1;
 
         } catch (ApiException $e) {
             Log::error('ApiException occurred: ' . $e->getMessage());
