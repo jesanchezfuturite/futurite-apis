@@ -28,9 +28,10 @@ class ListGoogleAdsCampaigns extends Command
         $loginCustomerId = $this->sanitizeCustomerId(config('google-ads.manager_customer_id')); // Obtén el ID del cliente administrador de la configuración
 
         try {
-            // Configura el cliente de Google Ads con el login-customer-id
+            // Construir el cliente de Google Ads con el login-customer-id
             $googleAdsClient = (new GoogleAdsClientBuilder())
-                ->from($this->googleAdsClient)
+                ->withDeveloperToken($this->googleAdsClient->getDeveloperToken())
+                ->withOAuth2Credential($this->googleAdsClient->getOAuth2Credential())
                 ->withLoginCustomerId($loginCustomerId)
                 ->build();
 
