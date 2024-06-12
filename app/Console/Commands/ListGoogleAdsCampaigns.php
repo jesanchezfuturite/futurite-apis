@@ -86,10 +86,18 @@ class ListGoogleAdsCampaigns extends Command
             return 0;
 
         } catch (ApiException $e) {
-            Log::error('ApiException occurred: ' . $e->getMessage());
+            Log::error('API Exception occurred CODE: ' . $e->getCode());
+            Log::error('API Exception occurred MESSAGE: ' . $e->getMessage());
+            Log::error('API Exception occurred FILE: ' . $e->getFile());
+            Log::error('API Exception occurred LINE: ' . $e->getLine());
+            Log::error('API Exception occurred TRACE: ' . json_encode($e->getTrace()) );
             return 1;
         } catch (\Exception $e) {
-            Log::error('Exception occurred: ' . $e->getMessage());
+            Log::error('Exception occurred CODE: ' . $e->getCode());
+            Log::error('Exception occurred MESSAGE: ' . $e->getMessage());
+            Log::error('Exception occurred FILE: ' . $e->getFile());
+            Log::error('Exception occurred LINE: ' . $e->getLine());
+            Log::error('Exception occurred TRACE: ' . json_encode($e->getTrace()) );
             return 1;
         }
     }
