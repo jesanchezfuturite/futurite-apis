@@ -59,7 +59,7 @@ class GoogleAdsServiceProvider extends ServiceProvider
             $oAuth2->updateToken($token);
 
             if ($oAuth2->isAccessTokenExpired()) {
-                $oAuth2->refreshToken($token['refresh_token']);
+                $oAuth2->refreshToken($token['access_token']);
                 $this->saveAccessToken($oAuth2->getToken());
             }
         } else {

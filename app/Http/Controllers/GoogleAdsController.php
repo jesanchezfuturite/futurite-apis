@@ -50,8 +50,7 @@ class GoogleAdsController extends Controller
 
             // Guarda el token de acceso y el token de actualización
             try{
-                $st = Storage::disk('local')->put('google-ads-token.json', json_encode($authToken));
-                Log::info(json_encode($st));
+                $st = Storage::disk('local')->put('google-ads/google-ads-token.json', json_encode($authToken));
             }catch(\Exception $e){
                 Log::info("[GoogleAdsController@handleGoogleAdsCallback] ERROR - " . json_encode($e));
             }
