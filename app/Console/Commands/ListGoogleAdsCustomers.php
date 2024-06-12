@@ -100,7 +100,11 @@ class ListGoogleAdsCustomers extends Command
             Log::error('ApiException occurred: ' . $e->getMessage());
             return 1;
         } catch (\Exception $e) {
-            Log::error('Exception occurred: ' . json_encode($e));
+            Log::error('Exception occurred CODE: ' . $e->getCode());
+            Log::error('Exception occurred MESSAGE: ' . $e->getMessage());
+            Log::error('Exception occurred FILE: ' . $e->getFile());
+            Log::error('Exception occurred LINE: ' . $e->getLine());
+            Log::error('Exception occurred TRACE: ' . $e->getTrace());
             return 1;
         }
     }
