@@ -53,12 +53,11 @@ class ListGoogleAdsCampaigns extends Command
                     campaign
             ';
 
-            $searchRequest = new SearchGoogleAdsRequest([
-                'customerId' => $customerId,
-                'query' => $query,
-            ]);
 
-            $response = $gaService->search($searchRequest);
+            $response = $gaService->search(
+                SearchGoogleAdsRequest::build($customerId, $query)
+            );
+
 
             Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] ListGoogleAdsCampaigns response " . json_encode($response));
             $campaigns = [];
