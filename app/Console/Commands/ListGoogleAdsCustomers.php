@@ -104,7 +104,7 @@ class ListGoogleAdsCustomers extends Command
             Log::error('Exception occurred MESSAGE: ' . $e->getMessage());
             Log::error('Exception occurred FILE: ' . $e->getFile());
             Log::error('Exception occurred LINE: ' . $e->getLine());
-            Log::error('Exception occurred TRACE: ' . $e->getTrace());
+            Log::error('Exception occurred TRACE: ' . json_encode($e->getTrace()) );
             return 1;
         }
     }
