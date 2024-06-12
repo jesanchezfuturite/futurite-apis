@@ -23,7 +23,7 @@ class ListGoogleAdsCampaigns extends Command
 
     public function handle()
     {
-        $customerId = $this->sanitizeCustomerId(4543695823);
+        $customerId = $this->sanitizeCustomerId($this->argument('customerId'));
 
         try {
             $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
