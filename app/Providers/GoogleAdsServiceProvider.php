@@ -58,16 +58,18 @@ class GoogleAdsServiceProvider extends ServiceProvider
         if ($token) {
             $oAuth2->updateToken($token);
 
-            if ($oAuth2->isAccessTokenExpired()) {
-                $oAuth2->refreshToken($token['access_token']);
-                $this->saveAccessToken($oAuth2->getToken());
+            if ($this->isAccessTokenExpired($token)) {
+                $oAuth2->refreshToken($token['refresh_token']);
+                $newToken = $oAuth2->getToken();
+                $this->saveAccessToken($newToken);
+                Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - Token refreshed: " . json_encode($newToken));
+            } else {
+                Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - Token loaded: " . json_encode($token));
             }
         } else {
             $authUrl = $oAuth2->buildFullAuthorizationUri();
             throw new \Exception("Please visit the following URL to authorize your application: $authUrl");
         }
-
-        Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - token " . json_encode($oAuth2->getToken()));
 
         return (new GoogleAdsClientBuilder())
             ->withOAuth2Credential($oAuth2)
@@ -96,6 +98,11 @@ class GoogleAdsServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             Log::error("GoogleAdsServiceProvider@saveAccessToken - " . json_encode($e));
         }
+    }
+
+    private function isAccessTokenExpired(array $token)
+    {
+        return isset($token['expires_at']) && $token['expires_at'] < time();
     }
 
     public function boot()
