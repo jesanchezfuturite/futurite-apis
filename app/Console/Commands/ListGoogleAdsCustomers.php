@@ -9,17 +9,26 @@ use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
 use Log;
 
+use App\Repositories\CustomersRepositoryEloquent;
+
+
+
 class ListGoogleAdsCustomers extends Command
 {
     protected $signature = 'googleads:list-customers';
     protected $description = 'List Google Ads customers';
 
     protected $googleAdsClient;
+    protected $customerRepo;
 
-    public function __construct(GoogleAdsClient $googleAdsClient)
+    public function __construct(
+        GoogleAdsClient $googleAdsClient,
+        CustomersRepositoryEloquent $customerRepo
+    )
     {
         parent::__construct();
         $this->googleAdsClient = $googleAdsClient;
+        $this->customerRepo = $customerRepo;
     }
 
     public function handle()
@@ -36,9 +45,6 @@ class ListGoogleAdsCustomers extends Command
             // Obtener el servicio GoogleAdsServiceClient para realizar consultas
             $customerId = $this->sanitizeCustomerId(config('google-ads.login_customer_id'));
             $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
-
-            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers customerId " . json_encode($customerId));
-            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers gaService " . json_encode($gaService));
 
             $query = '
                 SELECT
@@ -63,11 +69,10 @@ class ListGoogleAdsCustomers extends Command
                 SearchGoogleAdsRequest::build($customerId, $query)
             );
 
-            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers response " . json_encode($response));
-            $accounts = [];
+            // hacemos el truncate a la tabla y actualizamos todos los registros
+            $this->customerRepo->truncate();
 
             foreach ($response->iterateAllElements() as $row) {
-                Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers row " . json_encode($row));
 
                 $info = [
                     'client_customer' => $row->getCustomerClient()->getClientCustomer(),
@@ -84,13 +89,12 @@ class ListGoogleAdsCustomers extends Command
                 ];
 
                 try {
-                    $accounts[] = $info;
+                    $this->customerRepo->create($info);
                 } catch (\Exception $e) {
-                    dd($e->getMessage());
+                    Log::error('Exception occurred during updating customers: ' . $e->getMessage());
+                    return 1;
                 }
             }
-
-            dd($accounts);
 
             return response()->json('fin proceso');
 
