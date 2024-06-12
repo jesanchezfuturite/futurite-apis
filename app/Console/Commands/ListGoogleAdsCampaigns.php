@@ -24,10 +24,16 @@ class ListGoogleAdsCampaigns extends Command
     public function handle()
     {
         $customerId = $this->sanitizeCustomerId($this->argument('customerId'));
-        $loginCustomerId = $this->sanitizeCustomerId(config('google-ads.manager_customer_id')); // Obtén el ID del cliente administrador de la configuración
+        $loginCustomerId = config('google-ads.manager_customer_id'); // Obtén el ID del cliente administrador de la configuración
 
         try {
-            $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
+            // Configura el cliente de Google Ads con el login-customer-id
+            $googleAdsClient = (new GoogleAdsClientBuilder())
+                ->from($this->googleAdsClient->getGoogleAdsConfig())
+                ->withLoginCustomerId($loginCustomerId)
+                ->build();
+
+            $gaService = $googleAdsClient->getGoogleAdsServiceClient();
 
             Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] CustomerId " . $customerId);
             Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] LoginCustomerId " . $loginCustomerId);
@@ -45,12 +51,12 @@ class ListGoogleAdsCampaigns extends Command
                     campaign
             ';
 
-            $response = $gaService->search(
-                $customerId,
-                new SearchGoogleAdsRequest([
-                    'query' => $query,
-                ])
-            );
+            $searchRequest = new SearchGoogleAdsRequest([
+                'customerId' => $customerId,
+                'query' => $query,
+            ]);
+
+            $response = $gaService->search($searchRequest);
 
             Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] ListGoogleAdsCampaigns response " . json_encode($response));
             $campaigns = [];
