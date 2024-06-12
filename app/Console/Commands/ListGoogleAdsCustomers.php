@@ -11,10 +11,6 @@ use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
 use Log;
 
-
-
-
-
 class ListGoogleAdsCustomers extends Command
 {
     protected $signature = 'googleads:list-customers';
@@ -104,7 +100,7 @@ class ListGoogleAdsCustomers extends Command
             Log::error('ApiException occurred: ' . $e->getMessage());
             return 1;
         } catch (\Exception $e) {
-            Log::error('Exception occurred: ' . $e->getMessage());
+            Log::error('Exception occurred: ' . json_encode($e));
             return 1;
         }
     }
