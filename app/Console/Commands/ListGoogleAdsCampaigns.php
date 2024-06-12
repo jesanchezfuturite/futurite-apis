@@ -45,13 +45,12 @@ class ListGoogleAdsCampaigns extends Command
                     campaign
             ';
 
-            $searchRequest = new SearchGoogleAdsRequest([
-                'customerId' => $customerId,
-                'query' => $query,
-                'loginCustomerId' => $loginCustomerId
-            ]);
-
-            $response = $gaService->search($searchRequest);
+            $response = $gaService->search(
+                $customerId,
+                new SearchGoogleAdsRequest([
+                    'query' => $query,
+                ])
+            );
 
             Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] ListGoogleAdsCampaigns response " . json_encode($response));
             $campaigns = [];
@@ -85,7 +84,7 @@ class ListGoogleAdsCampaigns extends Command
 
             return 0;
 
-        } catch (ApiException $e) {
+        }catch (ApiException $e) {
             Log::error('API Exception occurred CODE: ' . $e->getCode());
             Log::error('API Exception occurred MESSAGE: ' . $e->getMessage());
             Log::error('API Exception occurred FILE: ' . $e->getFile());
