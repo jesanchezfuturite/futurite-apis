@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Repositories\CustomersRepositoryEloquent;
+
 use Illuminate\Console\Command;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClient;
 use Google\Ads\GoogleAds\V16\Services\ListAccessibleCustomersRequest;
@@ -9,7 +11,7 @@ use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
 use Log;
 
-use App\Repositories\CustomersRepositoryEloquent;
+
 
 
 
@@ -89,7 +91,7 @@ class ListGoogleAdsCustomers extends Command
                 ];
 
                 try {
-                    $this->customerRepo->create($info);
+                    dd($info);//$this->customerRepo->create($info);
                 } catch (\Exception $e) {
                     Log::error('Exception occurred during updating customers: ' . $e->getMessage());
                     return 1;
