@@ -30,7 +30,8 @@ class ListGoogleAdsCampaigns extends Command
         try {
             // Configura el cliente de Google Ads con el login-customer-id
             $googleAdsClient = (new GoogleAdsClientBuilder())
-                ->from($this->googleAdsClient->getGoogleAdsConfig())
+                ->withOAuth2Credential($this->googleAdsClient->getOAuth2Credential())
+                ->withDeveloperToken($this->googleAdsClient->getDeveloperToken())
                 ->withLoginCustomerId($loginCustomerId)
                 ->build();
 
@@ -53,11 +54,10 @@ class ListGoogleAdsCampaigns extends Command
             ';
 
             $searchRequest = new SearchGoogleAdsRequest([
-                'customerId' => $customerId,
                 'query' => $query,
             ]);
 
-            $response = $gaService->search($searchRequest);
+            $response = $gaService->search($customerId, $searchRequest);
 
             Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] ListGoogleAdsCampaigns response " . json_encode($response));
             $campaigns = [];
