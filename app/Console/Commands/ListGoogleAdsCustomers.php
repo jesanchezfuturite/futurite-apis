@@ -38,6 +38,10 @@ class ListGoogleAdsCustomers extends Command
             $customerId = config('google-ads.login_customer_id');
             $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
 
+            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers customerId " . json_encode($customerId));
+            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers gaService " . json_encode($gaService));
+
+
             $query = '
                 SELECT
                     customer_client.client_customer,
@@ -60,12 +64,13 @@ class ListGoogleAdsCustomers extends Command
             $response = $gaService->search(
                 SearchGoogleAdsRequest::build($customerId, $query)
             );
-
+            Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers response " . json_encode($response));
             $accounts = [];
 
            // $this->customers->truncate();
 
             foreach ($response->iterateAllElements() as $row) {
+                Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers row " . json_encode($row));
 
 
                 $info = [
