@@ -34,8 +34,67 @@ class ListGoogleAdsCustomers extends Command
             $response = $customerServiceClient->listAccessibleCustomers($listAccessibleCustomersRequest);
 
             // Obtener el servicio GoogleAdsServiceClient para realizar consultas
-            $googleAdsServiceClient = $this->googleAdsClient->getGoogleAdsServiceClient();
+            // $googleAdsServiceClient = $this->googleAdsClient->getGoogleAdsServiceClient();
 
+            $gaService = $this->googleAdsClient->getGoogleAdsServiceClient();
+
+            $query = '
+                SELECT
+                    customer_client.client_customer,
+                    customer_client.level,
+                    customer_client.manager,
+                    customer_client.descriptive_name,
+                    customer_client.currency_code,
+                    customer_client.time_zone,
+                    customer_client.id,
+                    customer_client.hidden,
+                    customer_client.resource_name,
+                    customer_client.test_account,
+                    customer_client.applied_labels
+                FROM
+                    customer_client
+                WHERE
+                    customer_client.level <= 1
+            ';
+
+            $response = $gaService->search(
+                SearchGoogleAdsRequest::build($customerId, $query)
+            );
+
+            $accounts = [];
+
+           // $this->customers->truncate();
+
+            foreach ($response->iterateAllElements() as $row) {
+
+
+                $info = [
+                    'client_customer' => $row->getCustomerClient()->getClientCustomer(),
+                    'level' => $row->getCustomerClient()->getLevel(),
+                    'manager' => $row->getCustomerClient()->getManager(),
+                    'descriptive_name' => $row->getCustomerClient()->getDescriptiveName(),
+                    'currency_code' => $row->getCustomerClient()->getCurrencyCode(),
+                    'time_zone' => $row->getCustomerClient()->getTimeZone(),
+                    'internal_id' => $row->getCustomerClient()->getId(),
+                    'hidden' => $row->getCustomerClient()->getHidden(),
+                    'resource_name' => $row->getCustomerClient()->getResourceName(),
+                    'test_account' => $row->getCustomerClient()->getTestAccount(),
+                    'applied_labels' => json_encode($row->getCustomerClient()->getAppliedLabels())
+                ];
+
+                try{
+                    $accounts []= $info;
+                }catch(\Exception $e){
+                    dd($e->getMessage());
+                }
+
+            }
+
+            dd($accounts);
+
+            return response()->json('fin proceso');
+
+            /*
             Log::info("[COMMAND-ListGoogleAdsCustomers@handle] ListAccessibleCustomers response " . json_encode($response));
 
             foreach ($response->getResourceNames() as $customerResourceName) {
@@ -84,7 +143,7 @@ class ListGoogleAdsCustomers extends Command
 
                     $this->info("-------------------------------");
                 }
-            }
+            }*/
 
             return 0;
 
