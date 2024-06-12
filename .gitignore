@@ -19,4 +19,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/app/Providers
+/app/Providers/GoogleAdsServiceProvider.php
