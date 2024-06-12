@@ -67,6 +67,8 @@ class GoogleAdsServiceProvider extends ServiceProvider
             throw new \Exception("Please visit the following URL to authorize your application: $authUrl");
         }
 
+        Log::info("[GoogleAdsServiceProvider@createGoogleAdsClient] - token " . json_encode($oAuth2->getToken()));
+
         return (new GoogleAdsClientBuilder())
             ->withOAuth2Credential($oAuth2)
             ->withDeveloperToken($webCredentials['developer_token'])
