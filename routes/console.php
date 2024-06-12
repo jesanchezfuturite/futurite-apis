@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Artisan;
 
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('googleads:list-customers')->everyMinute();
+Schedule::command('googleads:list-customers')->hourly();
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
