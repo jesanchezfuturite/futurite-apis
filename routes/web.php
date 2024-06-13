@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\GoogleAdsController;
+use App\Http\Controllers\GoogleController;
 /*
 Route::get('/google-ads/authenticate', [CampaignsController::class, 'authenticate'])->name('google.ads.authenticate');
 Route::get('/google-ads/callback', [CampaignsController::class, 'callback'])->name('google.ads.callback');
@@ -22,3 +23,5 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/config', [App\Http\Controllers\ConfigController::class, 'listCustomers'])->name('config.listcostumers');
+
+Route::get('/google-ads/customers', [GoogleController::class, 'listCustomers']);

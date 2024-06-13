@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Repositories\CustomersRepositoryEloquent;
-
 use Illuminate\Console\Command;
 use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClient;
+use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
+use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\V16\Services\ListAccessibleCustomersRequest;
 use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
@@ -19,13 +20,26 @@ class ListGoogleAdsCustomers extends Command
     protected $googleAdsClient;
     protected $customerRepo;
 
-    public function __construct(
-        GoogleAdsClient $googleAdsClient,
-        CustomersRepositoryEloquent $customerRepo
-    )
+    public function __construct(CustomersRepositoryEloquent $customerRepo)
     {
         parent::__construct();
-        $this->googleAdsClient = $googleAdsClient;
+
+        // Cargar la configuración desde el archivo INI
+        $config = parse_ini_file(storage_path('app/google-ads/google-ads.ini'));
+
+        // Inicializar el cliente de la API de Google Ads con credenciales de la cuenta de servicio
+        $oAuth2Credential = (new OAuth2TokenBuilder())
+            ->withJsonKeyFilePath(storage_path($config['jsonKeyFilePath']))
+            ->withScopes([$config['scopes']])
+            ->withImpersonatedEmail($config['impersonatedEmail'])
+            ->build();
+
+        $this->googleAdsClient = (new GoogleAdsClientBuilder())
+            ->withDeveloperToken($config['developerToken'])
+            ->withOAuth2Credential($oAuth2Credential)
+            ->withLoginCustomerId($config['loginCustomerId'])
+            ->build();
+
         $this->customerRepo = $customerRepo;
     }
 
@@ -71,7 +85,6 @@ class ListGoogleAdsCustomers extends Command
             $this->customerRepo->truncate();
 
             foreach ($response->iterateAllElements() as $row) {
-
                 $info = [
                     'client_customer' => $row->getCustomerClient()->getClientCustomer(),
                     'level' => $row->getCustomerClient()->getLevel(),
@@ -94,7 +107,7 @@ class ListGoogleAdsCustomers extends Command
                 }
             }
 
-            return 1;
+            return 0;
 
         } catch (ApiException $e) {
             Log::error('ApiException occurred: ' . $e->getMessage());
@@ -104,7 +117,7 @@ class ListGoogleAdsCustomers extends Command
             Log::error('Exception occurred MESSAGE: ' . $e->getMessage());
             Log::error('Exception occurred FILE: ' . $e->getFile());
             Log::error('Exception occurred LINE: ' . $e->getLine());
-            Log::error('Exception occurred TRACE: ' . json_encode($e->getTrace()) );
+            Log::error('Exception occurred TRACE: ' . json_encode($e->getTrace()));
             return 1;
         }
     }
