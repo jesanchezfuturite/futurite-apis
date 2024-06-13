@@ -106,7 +106,7 @@ class ListGoogleAdsCustomers extends Command
                     return 1;
                 }
             }
-
+            Log::info('[Command-ListGoogleAdsCustomers] EXECUTED');
             return 0;
 
         } catch (ApiException $e) {
