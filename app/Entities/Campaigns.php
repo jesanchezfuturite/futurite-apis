@@ -21,14 +21,24 @@ class Campaigns extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
+        'customer_id',
         'campaign_id',
         'name',
         'status',
-        'clicks',
-        'impressions',
-        'ctr',
-        'average_cpc',
-        'cost_micros',
+        'serving_status',
+        'advertising_channel_type',
+        'advertising_channel_sub_type',
+        'start_date',
+        'end_date',
+        'bidding_strategy_type',
+        'campaign_budget',
+        'labels',
+        'tracking_url_template',
+        'final_url_suffix',
+        'frequency_caps',
+        'video_brand_safety_suitability',
+        'experiment_type',
+        'optimization_score',
     ];
 
 }

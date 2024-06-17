@@ -14,7 +14,7 @@ return new class extends Migration
 	{
 		Schema::create('customers', function(Blueprint $table) {
             $table->increments('id');
-            $table->bigInteger('internal_id');
+            $table->bigInteger('customer_id');
             $table->string('descriptive_name');
             $table->string('client_customer');
             $table->integer('level');
@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('resource_name');
             $table->string('test_account');
             $table->string('applied_labels');
+            $table->integer('status');
             $table->timestamps();
 		});
 	}

@@ -70,7 +70,8 @@ class ListGoogleAdsCustomers extends Command
                     customer_client.hidden,
                     customer_client.resource_name,
                     customer_client.test_account,
-                    customer_client.applied_labels
+                    customer_client.applied_labels,
+                    customer_client.status
                 FROM
                     customer_client
                 WHERE
@@ -92,11 +93,12 @@ class ListGoogleAdsCustomers extends Command
                     'descriptive_name' => $row->getCustomerClient()->getDescriptiveName(),
                     'currency_code' => $row->getCustomerClient()->getCurrencyCode(),
                     'time_zone' => $row->getCustomerClient()->getTimeZone(),
-                    'internal_id' => $row->getCustomerClient()->getId(),
+                    'customer_id' => $row->getCustomerClient()->getId(),
                     'hidden' => $row->getCustomerClient()->getHidden(),
                     'resource_name' => $row->getCustomerClient()->getResourceName(),
                     'test_account' => $row->getCustomerClient()->getTestAccount(),
-                    'applied_labels' => json_encode($row->getCustomerClient()->getAppliedLabels())
+                    'applied_labels' => json_encode($row->getCustomerClient()->getAppliedLabels()),
+                    'status' => $row->getCustomerClient()->getStatus(),
                 ];
 
                 try {
