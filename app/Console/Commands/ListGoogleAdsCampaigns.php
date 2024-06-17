@@ -61,12 +61,12 @@ class ListGoogleAdsCampaigns extends Command
         // get all customers
         Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] Process started.");
 
-        $customers = $this->customerR->all();
+        $customers = $this->customerR->findWhere([ 'status' => 2 ]);
 
         foreach($customers as $c)
         {
             // get campagaigns per customer
-            $campaigns = $this->getInfoPerCustomer($c->internal_id, $loginCustomerId);
+            $campaigns = $this->getInfoPerCustomer($c->customer_id, $loginCustomerId);
         }
 
         Log::info("[COMMAND-ListGoogleAdsCampaigns@handle] Process finished successfully.");

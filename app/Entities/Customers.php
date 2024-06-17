@@ -21,7 +21,7 @@ class Customers extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'internal_id',
+        'customer_id',
         'descriptive_name',
         'client_customer',
         'level',
