@@ -32,6 +32,7 @@ class Customers extends Model implements Transformable
         'resource_name',
         'test_account',
         'applied_labels',
+        'status',
     ];
 
 }
