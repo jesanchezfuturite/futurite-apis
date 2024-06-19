@@ -21,6 +21,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/ads/config', [App\Http\Controllers\AdsController::class, 'listClients'])->name('ads.config');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/config', [App\Http\Controllers\ConfigController::class, 'listCustomers'])->name('config.listcostumers');
 
