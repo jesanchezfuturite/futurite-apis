@@ -4,16 +4,16 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\OngoingclientesRepository;
-use App\Entities\Ongoingclientes;
-use App\Validators\OngoingclientesValidator;
+use App\Repositories\AdscustomersclientsRepository;
+use App\Entities\Adscustomersclients;
+use App\Validators\AdscustomersclientsValidator;
 
 /**
- * Class OngoingclientesRepositoryEloquent.
+ * Class AdscustomersclientsRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class OngoingclientesRepositoryEloquent extends BaseRepository implements OngoingclientesRepository
+class AdscustomersclientsRepositoryEloquent extends BaseRepository implements AdscustomersclientsRepository
 {
     /**
      * Specify Model class name
@@ -22,10 +22,10 @@ class OngoingclientesRepositoryEloquent extends BaseRepository implements Ongoin
      */
     public function model()
     {
-        return Ongoingclientes::class;
+        return Adscustomersclients::class;
     }
 
-
+    
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,6 +34,5 @@ class OngoingclientesRepositoryEloquent extends BaseRepository implements Ongoin
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-
-
+    
 }

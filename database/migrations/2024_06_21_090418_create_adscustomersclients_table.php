@@ -12,9 +12,10 @@ return new class extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('ongoingclientes', function(Blueprint $table) {
+		Schema::create('ads_customers_clients', function(Blueprint $table) {
             $table->increments('id');
-
+            $table->string('customer_id');
+            $table->integer('client_id');
             $table->timestamps();
 		});
 	}
@@ -26,6 +27,6 @@ return new class extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('ongoingclientes');
+		Schema::drop('ads_customers_clients');
 	}
 };

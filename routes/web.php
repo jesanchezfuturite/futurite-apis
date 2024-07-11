@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+use App\Http\Controllers\AdsController;
 use App\Http\Controllers\GoogleAdsController;
 use App\Http\Controllers\GoogleController;
 /*
@@ -21,9 +23,19 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/ads/config', [App\Http\Controllers\AdsController::class, 'listClients'])->name('ads.config');
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/config', [App\Http\Controllers\ConfigController::class, 'listCustomers'])->name('config.listcostumers');
 
 Route::get('/google-ads/customers', [GoogleController::class, 'listCustomers']);
+
+/* rutas de las herramientas internas */
+Route::get('/ads/config', [AdsController::class, 'listClients'])->name('ads.config');
+
+
+
+/* rutas ajax */
+Route::post('/ads/config-customers-json', [AdsController::class, 'listCustomersJson']);
+Route::post('/ads/unlink-customer', [AdsController::class, 'unlinkCustomersJson']);
+Route::post('/ads/relate-customer', [AdsController::class, 'relateCustomersJson']);
+

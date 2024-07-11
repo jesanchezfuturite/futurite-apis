@@ -7,11 +7,11 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class Ongoingclientes.
+ * Class Adscustomersclients.
  *
  * @package namespace App\Entities;
  */
-class Ongoingclientes extends Model implements Transformable
+class Adscustomersclients extends Model implements Transformable
 {
     use TransformableTrait;
 
@@ -21,13 +21,8 @@ class Ongoingclientes extends Model implements Transformable
      * @var array
      */
 
-    protected $connection = 'ongoing';
-    protected $table = 'clientes';
-    protected $fillable = [];
+    protected $table = 'ads_customers_clients';
 
-
-    public function services(){
-        return $this->hasMany(\App\Entities\Ongoingclienteservicios::class, 'cliente_id','id');
-    }
+    protected $fillable = ['customer_id','client_id'];
 
 }
