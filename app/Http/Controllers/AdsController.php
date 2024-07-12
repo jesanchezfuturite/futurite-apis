@@ -15,6 +15,7 @@ use Google\ApiCore\ApiException;
 use App\Repositories\AdscustomersclientsRepositoryEloquent;
 use App\Repositories\CustomersRepositoryEloquent;
 use App\Repositories\CampaignsRepositoryEloquent;
+use App\Repositories\IndicatorsadsclientsRepositoryEloquent;
 
 // repositories ongoing
 use App\Repositories\OngoingclientesRepositoryEloquent;
@@ -30,6 +31,7 @@ class AdsController extends Controller
     protected $customers;
     protected $campaigns;
     protected $customersClients;
+    protected $indicators;
 
     protected $serviceAds = [7]; // agregar un elemento por cada servicio que definen a un cliente de ADS
 
@@ -38,7 +40,8 @@ class AdsController extends Controller
         OngoingclienteserviciosRepositoryEloquent $clienteServiciosOngoing,
         CustomersRepositoryEloquent $customers,
         AdscustomersclientsRepositoryEloquent $customersClients,
-        CampaignsRepositoryEloquent $campaigns
+        CampaignsRepositoryEloquent $campaigns,
+        IndicatorsadsclientsRepositoryEloquent $indicators
     )
     {
 
@@ -64,6 +67,7 @@ class AdsController extends Controller
         $this->customers                = $customers;
         $this->customersClients         = $customersClients;
         $this->campaigns                = $campaigns;
+        $this->indicators               = $indicators;
     }
 
     /**
@@ -192,36 +196,97 @@ class AdsController extends Controller
     }
 
     /**
-       * relate customer_id and client_id
-       *
-       * @param cliente_id
-       * @param customer_id
-       *
-       * @return message to frontend
-       *
-       */
+     * relate customer_id and client_id
+     *
+     * @param cliente_id
+     * @param customer_id
+     *
+     * @return message to frontend
+     *
+     */
 
-       public function relateCustomersJson(Request $request)
-       {
-           $clienteId = $request->input('cliente_id');
-           $customerId = $request->input('customer_id');
+    public function relateCustomersJson(Request $request)
+    {
+        $clienteId = $request->input('cliente_id');
+        $customerId = $request->input('customer_id');
 
-           try{
+        try{
 
-               $this->customersClients->create(
-                    [
-                        'client_id'     => $clienteId,
-                        'customer_id'   => $customerId
-                    ]
-                );
+            $this->customersClients->create(
+                [
+                    'client_id'     => $clienteId,
+                    'customer_id'   => $customerId
+                ]
+            );
 
-               return response()->json(['success' => true, 'clienteId' => $clienteId,'message' => 'customer linked']);
+            return response()->json(['success' => true, 'clienteId' => $clienteId,'message' => 'customer linked']);
 
-           }catch(\Exception $e){
-               return response()->json(['success' => false, 'message' => $e->getMessage()]);
-           }
+        }catch(\Exception $e){
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
 
 
 
-       }
+    }
+
+    public function getClientStats()
+    {
+        // Obtener todos los registros únicos de cliente_id de la tabla indicatorsadsclients
+        $indicators = $this->indicators->all()->groupBy('client_id');
+
+        $data = [];
+
+        foreach ($indicators as $clientId => $indicatorsGroup) {
+            // Obtener el nombre del cliente desde la tabla ongoingclientes
+            $client = $this->clientesOngoing->find($clientId);
+            if (!$client) {
+                continue;
+            }
+
+            $customerStats = [];
+            $customerIds = $indicatorsGroup->pluck('customer_id')->unique();
+
+            foreach ($customerIds as $customerId) {
+                // Obtener el nombre del customer
+                $customer = $this->customers->findWhere(['customer_id' => $customerId])->first();
+                if (!$customer) {
+                    continue;
+                }
+
+                $campaignStats = [];
+                $campaignIds = $indicatorsGroup->where('customer_id', $customerId)->pluck('campaign_id')->unique();
+
+                foreach ($campaignIds as $campaignId) {
+                    // Obtener el nombre de la campaña
+                    $campaign = $this->campaigns->findWhere(['campaign_id' => $campaignId])->first();
+                    if (!$campaign) {
+                        continue;
+                    }
+
+                    // Obtener los indicadores para la campaña actual
+                    $indicators = $indicatorsGroup->where('customer_id', $customerId)->where('campaign_id', $campaignId)->first();
+
+                    $campaignStats[] = [
+                        'campaign_name' => $campaign->name,
+                        'indicators' => $indicators,
+                    ];
+                }
+
+                $customerStats[] = [
+                    'customer_name' => $customer->descriptive_name,
+                    'campaigns' => $campaignStats,
+                ];
+            }
+
+            $data[] = [
+                'client_name' => $client->nombre,
+                'customers' => $customerStats,
+            ];
+        }
+
+        return response()->json($data);
+    }
+
+
+
 }

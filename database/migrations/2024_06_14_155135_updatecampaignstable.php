@@ -4,18 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class UpdateCampaignsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        //
-        Schema::create('campaigns', function(Blueprint $table) {
-            $table->increments('id');
+        Schema::dropIfExists('campaigns'); // Asegúrate de eliminar la tabla si ya existe
+
+        Schema::create('campaigns', function (Blueprint $table) {
+            $table->id();
             $table->bigInteger('customer_id');
-            $table->bigInteger('campaign_id')->unique();
+            $table->bigInteger('campaign_id');
             $table->string('name');
             $table->string('status');
             $table->string('serving_status');
@@ -33,16 +36,16 @@ return new class extends Migration
             $table->string('experiment_type')->nullable();
             $table->float('optimization_score')->nullable();
             $table->timestamps();
-
         });
-
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        //
+        Schema::dropIfExists('campaigns');
     }
-};
+}

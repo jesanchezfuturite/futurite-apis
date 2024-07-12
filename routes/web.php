@@ -32,10 +32,17 @@ Route::get('/google-ads/customers', [GoogleController::class, 'listCustomers']);
 /* rutas de las herramientas internas */
 Route::get('/ads/config', [AdsController::class, 'listClients'])->name('ads.config');
 
+/** test reporte marketing */
+Route::get('/demo-layout-marketing', function () {
+    return view('demo-layout-marketing');
+});
 
 
 /* rutas ajax */
 Route::post('/ads/config-customers-json', [AdsController::class, 'listCustomersJson']);
 Route::post('/ads/unlink-customer', [AdsController::class, 'unlinkCustomersJson']);
 Route::post('/ads/relate-customer', [AdsController::class, 'relateCustomersJson']);
+
+Route::get('/ads/client-stats-json', [AdsController::class, 'getClientStats']);
+
 
