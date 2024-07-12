@@ -274,6 +274,7 @@ class AdsController extends Controller
 
                 $customerStats[] = [
                     'customer_name' => $customer->descriptive_name,
+                    'customer_id' => $customer->customer_id,
                     'campaigns' => $campaignStats,
                 ];
             }

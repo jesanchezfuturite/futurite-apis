@@ -14,40 +14,14 @@
         .highlight-zero-impressions {
             background-color: #f8d7da;
         }
+
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Google Ads Campaigns Statistics</h1>
-        <div id="loadingIndicator">
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-            <p>Loading data, please wait...</p>
-        </div>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Client Name</th>
-                    <th>Customer Name</th>
-                    <th>Campaign Name</th>
-                    <th>Impressions</th>
-                    <th>Impressions Current Month</th>
-                    <th>Impressions Last Month</th>
-                    <th>Clicks</th>
-                    <th>Clicks Current Month</th>
-                    <th>Clicks Last Month</th>
-                    <th>Cost</th>
-                    <th>Cost Current Month</th>
-                    <th>Cost Last Month</th>
-                </tr>
-            </thead>
-            <tbody id="statistics">
-                <!-- Data will be appended here -->
-            </tbody>
-        </table>
-    </div>
+    <div id="statistics" >
 
+
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
@@ -68,27 +42,27 @@
 
                     var html = '';
                     data.forEach(function(client) {
+                        html += '<div  class="card"><div class="card-body"><h5 class="card-title">'+client.client_name+'</h5>';
                         client.customers.forEach(function(customer) {
+                            html += '<p class="card-text">'+customer.customer_id+'</p>';
+                            html += '<p class="card-text"><strong>Campañas:</strong>';
+                            html += '<table>';
+                                html += '<tr>';
+                                    html +='<th>Nombre</th><th>Impresiones hoy</th><th>Impresiones del mes</th><th>Impresiones mes anterior</th>';
+                                    html +='<th>Clics hoy</th><th>Clics del mes</th><th>Clics mes anterior</th>';
+                                    html +='<th>Costo hoy</th><th>Costo del mes</th><th>Costo mes anterior</th>';
+
+                                html +='</tr>';
                             customer.campaigns.forEach(function(campaign) {
-                                var rowClass = campaign.indicators.impressions === 0 ? 'highlight-zero-impressions' : '';
-                                html += `
-                                    <tr class="${rowClass}">
-                                        <td>${client.client_name}</td>
-                                        <td>${customer.customer_name}</td>
-                                        <td>${campaign.campaign_name}</td>
-                                        <td>${campaign.indicators.impressions}</td>
-                                        <td>${campaign.indicators.impressions_month}</td>
-                                        <td>${campaign.indicators.impressions_last_month}</td>
-                                        <td>${campaign.indicators.clics}</td>
-                                        <td>${campaign.indicators.clics_month}</td>
-                                        <td>${campaign.indicators.clics_last_month}</td>
-                                        <td>${formatCurrency(campaign.indicators.paid)}</td>
-                                        <td>${formatCurrency(campaign.indicators.paid_month)}</td>
-                                        <td>${formatCurrency(campaign.indicators.paid_last_month)}</td>
-                                    </tr>
-                                `;
+                                html +='<tr>';
+                                    html +='<td>'+campaign.campaign_name+'</td><td>'+campaign.indicators.impressions+'</td><td>'+campaign.indicators.impressions_month+'</td><td>'+campaign.indicators.impressions_last_month+'</td>';
+                                    html +='<td>'+campaign.indicators.clics+'</td><td>'+campaign.indicators.clics_month+'</td><td>'+campaign.indicators.clics_last_month+'</td>';
+                                    html +='<td>'+formatCurrency(campaign.indicators.paid)+'</td><td>'+formatCurrency(campaign.indicators.paid_month)+'</td><td>'+formatCurrency(campaign.indicators.paid_last_month)+'</td>';
+                                html +='</tr>';
                             });
+                            html += '</table>';
                         });
+                        html += '</div></div>';
                     });
 
                     $('#statistics').html(html);
