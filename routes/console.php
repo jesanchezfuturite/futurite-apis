@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Artisan;
 
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('googleads:list-customers')->everyFourHours(0);;
-Schedule::command('googleads:list-campaigns')->everyFourHours(10);;
+Schedule::command('googleads:list-customers')->everySixHours(0);;
+Schedule::command('googleads:list-campaigns')->everySixHours(10);;
 Schedule::command('googleads:update-indicators')->everyThreeHours(20);
 
 Artisan::command('inspire', function () {
