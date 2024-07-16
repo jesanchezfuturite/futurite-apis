@@ -33,10 +33,6 @@ Route::get('/google-ads/customers', [GoogleController::class, 'listCustomers']);
 /* rutas de las herramientas internas */
 Route::get('/ads/config', [AdsController::class, 'listClients'])->name('ads.config');
 
-/** test reporte marketing */
-Route::get('/demo-layout-marketing', function () {
-    return view('demo-layout-marketing');
-});
 
 
 /* rutas ajax */

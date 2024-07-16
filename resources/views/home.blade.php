@@ -120,6 +120,11 @@
     function formatCurrency(value) {
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
         }
+
+    // Recargar la página cada 90 minutos (5400000 ms)
+    setInterval(function() {
+            location.reload();
+        }, 5400000);
 </script>
 @endsection
 
