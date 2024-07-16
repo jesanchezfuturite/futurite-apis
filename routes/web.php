@@ -26,6 +26,7 @@ Auth::routes();
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/general', [App\Http\Controllers\HomeController::class, 'general'])->name('general');
 
 Route::get('/google-ads/customers', [GoogleController::class, 'listCustomers']);
 

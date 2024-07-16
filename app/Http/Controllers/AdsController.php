@@ -234,9 +234,14 @@ class AdsController extends Controller
         // Obtener todos los registros únicos de cliente_id de la tabla indicatorsadsclients
         $indicators = $this->indicators->all()->groupBy('client_id');
 
-        $data = [];
+        $data           = [];
+
+        $budget         = 0;
 
         foreach ($indicators as $clientId => $indicatorsGroup) {
+
+            $lastCost      = 0;
+            $currentCost   = 0;
             // Obtener el nombre del cliente desde la tabla ongoingclientes
             $client = $this->clientesOngoing->find($clientId);
             if (!$client) {
@@ -266,6 +271,10 @@ class AdsController extends Controller
                     // Obtener los indicadores para la campaña actual
                     $indicators = $indicatorsGroup->where('customer_id', $customerId)->where('campaign_id', $campaignId)->first();
 
+                    $budget = $indicators->budget;
+                    $currentCost += $indicators->paid_month;
+                    $lastCost += $indicators->paid_last_month;
+
                     $campaignStats[] = [
                         'campaign_name' => $campaign->name,
                         'indicators' => $indicators,
@@ -280,8 +289,11 @@ class AdsController extends Controller
             }
 
             $data[] = [
-                'client_name' => $client->nombre,
-                'customers' => $customerStats,
+                'client_name'   => $client->nombre,
+                'client_budget' => $budget,
+                'current_cost'  => $currentCost,
+                'last_cost'     => $lastCost,
+                'customers'     => $customerStats,
             ];
         }
 
@@ -289,5 +301,39 @@ class AdsController extends Controller
     }
 
 
+    /**
+     * este metodo sirve para confirmar el presupuesto reportado en ongoing
+     */
+    public function getBudget($clientId)
+    {
+        $indicators = $this->indicators->findWhere(['client_id' => $clientId])->first();
+
+        return $indicators->budget;
+
+    }
+
+
+    /**
+     * este metodo sirve para confirmar el costo del mes actual
+     */
+    public function getCost($clientId)
+    {
+        $indicators = $this->indicators->findWhere(['client_id' => $clientId]);
+
+        $current_month_cost = 0;
+        $last_month_cost = 0;
+
+        foreach($indicators as $i)
+        {
+            $current_month_cost += $i->paid_month;
+            $last_month_cost += $i->paid_last_month;
+        }
+
+        return array(
+            "current_month" =>  $current_month_cost,
+            "last_month" =>  $last_month_cost,
+        );
+
+    }
 
 }

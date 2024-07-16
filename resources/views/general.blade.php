@@ -33,7 +33,7 @@
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
                     var html = `
-                        <div id="client-${index}" class="card card-flush h-xl-100 mb-5" style="display: none;">
+                        <div id="client-${index}" class="card card-flush h-xl-100 mb-5" >
                             <div class="card-header pt-5">
                                 <h3 class="card-title align-items-start flex-column">
                                     <span class="card-label fw-bold text-gray-800">${client.client_name}</span>
@@ -92,8 +92,8 @@
                 });
 
                 $('#clients-container').html(clientsHtml);
-                showClient(0);
-                setInterval(changeClient, 20000, data.length); // Cambia de cliente cada minuto
+                //showClient(0);
+                //setInterval(changeClient, 20000, data.length); // Cambia de cliente cada minuto
             },
             error: function(error) {
                 console.error('Error fetching data:', error);
