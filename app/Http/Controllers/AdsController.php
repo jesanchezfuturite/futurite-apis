@@ -288,52 +288,28 @@ class AdsController extends Controller
                 ];
             }
 
+            /* calculamos el estimado del transcurso del mes */
+            $totalDays = date("d",mktime(0,0,0,date('m')+1,0,date('Y')));
+
+            $currentDay = date("d");
+
+            $transcurredMonth = round($currentDay / $totalDays * 100);
+
+            $transcurredSpent = ($currentCost > 0 ) ? round($currentCost / $budget * 100) : 0;
+
             $data[] = [
-                'client_name'   => $client->nombre,
-                'client_budget' => $budget,
-                'current_cost'  => $currentCost,
-                'last_cost'     => $lastCost,
-                'customers'     => $customerStats,
+                'client_name'       => $client->nombre,
+                'client_budget'     => $budget,
+                'current_cost'      => $currentCost,
+                'last_cost'         => $lastCost,
+                'customers'         => $customerStats,
+                'percentage_month'  => $transcurredMonth,
+                'percentage_spent'  => $transcurredSpent,
             ];
         }
 
         return response()->json($data);
     }
 
-
-    /**
-     * este metodo sirve para confirmar el presupuesto reportado en ongoing
-     */
-    public function getBudget($clientId)
-    {
-        $indicators = $this->indicators->findWhere(['client_id' => $clientId])->first();
-
-        return $indicators->budget;
-
-    }
-
-
-    /**
-     * este metodo sirve para confirmar el costo del mes actual
-     */
-    public function getCost($clientId)
-    {
-        $indicators = $this->indicators->findWhere(['client_id' => $clientId]);
-
-        $current_month_cost = 0;
-        $last_month_cost = 0;
-
-        foreach($indicators as $i)
-        {
-            $current_month_cost += $i->paid_month;
-            $last_month_cost += $i->paid_last_month;
-        }
-
-        return array(
-            "current_month" =>  $current_month_cost,
-            "last_month" =>  $last_month_cost,
-        );
-
-    }
 
 }
