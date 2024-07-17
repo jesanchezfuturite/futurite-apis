@@ -11,6 +11,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $connection = 'ongoing';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,5 +45,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /** 
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'avatar_url',
+    ];
+
+    public function getAvatarUrlAttribute(){
+        if(!empty($this->avatar)){
+            return asset('https://futurite.ongoing.mx/storage/avatares/'.$this->avatar);
+        }else{
+            return asset('https://futurite.ongoing.mx/assets-1/media/avatars/blank.png');
+        }
     }
 }
