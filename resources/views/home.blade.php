@@ -49,8 +49,8 @@
                             <div class="card-header ribbon ribbon-top ribbon-vertical pt-5">
                                 <div class="ribbon-label ${colr}">
 
-                                    <div><strong> CI </strong>  ${icon}</div>
-                                    <div><strong> ${client.percentage_spent}% / ${client.percentage_month}% </strong></div>
+                                    <div><${icon}</div>
+                                    <div><strong> ${client.percentage_spent}% C / ${client.percentage_month}% PPTO</strong></div>
                                 </div>
                                 <h3 class="card-title align-items-start flex-column">
                                     <span class="card-label fw-bold text-gray-800">${replaceDimex(client.client_name)}</span>
