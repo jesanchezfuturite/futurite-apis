@@ -58,7 +58,7 @@ License: For each use you must have a valid license purchased only from above li
 			<!--begin::Page-->
 			<div class="app-page flex-column flex-column-fluid" id="kt_app_page">
 				<!--begin::Header-->
-				<div id="kt_app_header" class="app-header">
+				<div id="kt_app_header" class="app-header" style="height: 80px">
 					<!--begin::Header primary-->
 					<div class="app-header-primary" data-kt-sticky="true" data-kt-sticky-name="app-header-primary-sticky" data-kt-sticky-offset="{default: 'false', lg: '300px'}">
 						<!--begin::Header primary container-->

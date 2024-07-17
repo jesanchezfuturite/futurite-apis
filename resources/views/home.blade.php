@@ -1,8 +1,6 @@
 @extends('layouts.system')
 
 @section('app_content')
-
-
 <!--begin::Row-->
 <div class="row gx-5 gx-xl-10">
     <div class="col-xxl-12 mb-5 mb-xl-10">
@@ -36,7 +34,7 @@
                         <div id="client-${index}" class="card card-flush h-xl-100 mb-5" style="display: none;">
                             <div class="card-header pt-5">
                                 <h3 class="card-title align-items-start flex-column">
-                                    <span class="card-label fw-bold text-gray-800">${client.client_name}</span>
+                                    <span class="card-label fw-bold text-gray-800">${replaceDimex(client.client_name)}</span>
                                     <span class="text-primary pt-1 fw-semibold fs-6">Presupuesto <strong>${formatCurrency(client.client_budget)}</strong></span>
                                     <span class="text-info pt-1 fw-semibold fs-6">Costo Actual <strong>${formatCurrency(client.current_cost)}</strong></span>
                                     <span class="text-muted pt-1 fw-semibold fs-6">Costo Mes Anterior <strong>${formatCurrency(client.last_cost)}</strong></span>
@@ -66,8 +64,8 @@
                         customer.campaigns.forEach(function(campaign) {
                             html += `
                                 <tr${campaign.indicators.impressions == 0 ? ' class="bg-danger text-white"' : ''}>
-                                    <td>${customer.customer_name}</td>
-                                    <td>${campaign.campaign_name}</td>
+                                    <td>${replaceDimex(customer.customer_name)}</td>
+                                    <td>${replaceDimex(campaign.campaign_name)}</td>
                                     <td>${campaign.indicators.impressions}</td>
                                     <td>${campaign.indicators.impressions_month}</td>
                                     <td>${campaign.indicators.impressions_last_month}</td>
@@ -114,17 +112,18 @@
             showClient(currentIndex);
         }
 
-
+        // Recargar la página cada 90 minutos (5400000 ms)
+        setInterval(function() {
+            location.reload();
+        }, 5400000);
     });
 
     function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-        }
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+    }
 
-    // Recargar la página cada 90 minutos (5400000 ms)
-    setInterval(function() {
-            location.reload();
-        }, 5400000);
+    function replaceDimex(text) {
+        return text.replace(/dimex/gi, 'DIM');
+    }
 </script>
 @endsection
-
