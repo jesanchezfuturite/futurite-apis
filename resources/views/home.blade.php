@@ -30,11 +30,22 @@
 
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
+
+                    if(client.percentage_spent === client.percentage_month){
+                        icon = `<i class="las la-thumbs-up"></i>`;
+                        colr = `bg-primary`;
+                    }else{
+                        icon = `<i class="las la-thumbs-up"></i>`;
+                        colr = `bg-danger`;
+                    }
+
+
                     var html = `
                         <div id="client-${index}" class="card card-flush h-xl-100 mb-5" style="display: none;">
                             <div class="card-header ribbon ribbon-top ribbon-vertical pt-5">
-                                <div class="ribbon-label bg-danger">
-                                    ${client.percentage_spent} / ${client.percentage_month}%
+                                <div class="ribbon-label ${colr}">
+
+                                    ${icon} " " ${client.percentage_spent} / ${client.percentage_month}%
                                 </div>
                                 <h3 class="card-title align-items-start flex-column">
                                     <span class="card-label fw-bold text-gray-800">${replaceDimex(client.client_name)}</span>
