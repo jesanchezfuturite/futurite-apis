@@ -33,6 +33,7 @@
 
                     if(client.percentage_spent === client.percentage_month){
                         icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
+                        icon2 = `<i class="las la-sun fs-2x text-white"></i>`;
                         colr = `bg-primary`;
                     }else{
                         icon = `<i class="las la-thumbs-down fs-2x text-white"></i>`;
@@ -50,8 +51,8 @@
                             <div class="card-header ribbon ribbon-top ribbon-vertical pt-5">
                                 <div class="ribbon-label ${colr}">
 
-                                    <div>${icon} Consumo ideal:</div>
-                                    <div>${icon2} ${client.percentage_spent} / ${client.percentage_month}%</div>
+                                    <div>${icon}${icon2} Consumo ideal:</div>
+                                    <div><strong> ${client.percentage_spent}% / ${client.percentage_month}% </strong></div>
                                 </div>
                                 <h3 class="card-title align-items-start flex-column">
                                     <span class="card-label fw-bold text-gray-800">${replaceDimex(client.client_name)}</span>
