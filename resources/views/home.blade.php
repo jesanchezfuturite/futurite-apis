@@ -40,9 +40,9 @@
                                     <span class="card-label fw-bold text-gray-800">${replaceDimex(client.client_name)}</span>
                                 </h3>
                                 <div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
-                                    <span class="text-primary pt-1 fw-semibold fs-6">Presupuesto <strong>${formatCurrency(client.client_budget)}</strong></span>
-                                    <span class="text-info pt-1 fw-semibold fs-6">Costo Actual <strong>${formatCurrency(client.current_cost)}</strong></span>
-                                    <span class="text-muted pt-1 fw-semibold fs-6">Costo Mes Anterior <strong>${formatCurrency(client.last_cost)}</strong></span>
+                                    <div class="text-primary pt-1 fw-semibold fs-6">Presupuesto <strong>${formatCurrency(client.client_budget)}</strong></div>
+                                    <div class="text-info pt-1 fw-semibold fs-6">Costo Actual <strong>${formatCurrency(client.current_cost)}</strong></div>
+                                    <div class="text-muted pt-1 fw-semibold fs-6">Costo Mes Anterior <strong>${formatCurrency(client.last_cost)}</strong></div>
                                 </div>
                             </div>
                             <div class="card-body py-3">
