@@ -32,10 +32,10 @@
                 data.forEach(function(client, index) {
 
                     if(client.percentage_spent === client.percentage_month){
-                        icon = `<i class="las la-thumbs-up"></i>`;
+                        icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
                         colr = `bg-primary`;
                     }else{
-                        icon = `<i class="las la-thumbs-down"></i>`;
+                        icon = `<i class="las la-thumbs-down fs-2x text-white"></i>`;
                         colr = `bg-danger`;
                     }
 
