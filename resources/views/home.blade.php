@@ -49,7 +49,7 @@
                             <div class="card-header ribbon ribbon-top ribbon-vertical pt-5">
                                 <div class="ribbon-label ${colr}">
 
-                                    <div><${icon}</div>
+                                    <div>${icon}</div>
                                     <div><strong> ${client.percentage_spent}% C / ${client.percentage_month}% PPTO</strong></div>
                                 </div>
                                 <h3 class="card-title align-items-start flex-column">
