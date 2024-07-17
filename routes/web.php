@@ -43,3 +43,6 @@ Route::post('/ads/relate-customer', [AdsController::class, 'relateCustomersJson'
 Route::get('/ads/client-stats-json', [AdsController::class, 'getClientStats']);
 
 
+Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
+

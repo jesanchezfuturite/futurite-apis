@@ -10,6 +10,7 @@
         "googleads/google-ads-php": "*",
         "laravel/framework": "^11.9",
         "laravel/passport": "^12.0",
+        "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "prettus/l5-repository": "^2.9",
