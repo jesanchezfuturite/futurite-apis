@@ -50,7 +50,7 @@
                             <div class="card-header ribbon ribbon-top ribbon-vertical pt-5">
                                 <div class="ribbon-label ${colr}">
 
-                                    ${icon} Consumo ideal: ${icon2} ${client.percentage_spent} / ${client.percentage_month}%
+                                    ${icon} Consumo ideal:<br /> ${icon2} ${client.percentage_spent} / ${client.percentage_month}%
                                 </div>
                                 <h3 class="card-title align-items-start flex-column">
                                     <span class="card-label fw-bold text-gray-800">${replaceDimex(client.client_name)}</span>
