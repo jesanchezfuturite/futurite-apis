@@ -26,21 +26,38 @@
             method: 'GET',
             success: function(data) {
                 console.log("Data fetched successfully:", data);
-                $('#loadingIndicator').hide();
 
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
 
-                    if(client.percentage_spent === client.percentage_month){
-                        icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
-                        colr = `bg-primary`;
-                    }else{
-                        colr = `bg-danger`;
-                        if(client.percentage_spent > client.percentage_month){
-                            icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
-                        }else{
-                            icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
-                        }
+                    difference = client.percentage_spent - client.percentage_month;
+                    difAbs = Math.abs(difference);
+                    console.log(client.client_name + ": "+difference );
+
+                    switch(difAbs){
+                        case 0:
+                        case 1:
+                        case 2:
+                            colr = `bg-primary`;
+                            icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
+                            break;
+                        case 3:
+                        case 4:
+                        colr = `bg-warning`;
+                            if(client.percentage_spent > client.percentage_month){
+                                icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
+                            }else{
+                                icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
+                            }
+                            break;
+                        default:
+                            colr = `bg-danger`;
+                            if(client.percentage_spent > client.percentage_month){
+                                icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
+                            }else{
+                                icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
+                            }
+                            break;
                     }
 
 

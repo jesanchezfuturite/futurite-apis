@@ -26,7 +26,6 @@
             method: 'GET',
             success: function(data) {
                 console.log("Data fetched successfully:", data);
-                $('#loadingIndicator').hide();
 
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
