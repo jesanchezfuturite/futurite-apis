@@ -30,33 +30,34 @@
 
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
-                    tag = 0;
                     difference = client.percentage_spent - client.percentage_month;
+                    difAbs = Math.abs(difference);
                     console.log(client.client_name + ": "+difference );
 
-                    if(difference > -2 && difference < 2 && tag === 0){
-                        colr = `bg-primary`;
-                        icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
-                        tag = 1;
-                    }
-                    if(difference > -3 && difference < 3 && tag === 0){
+                    switch(difAbs){
+                        case 0:
+                        case 1:
+                        case 2:
+                            colr = `bg-primary`;
+                            icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
+                            break;
+                        case 3:
+                        case 4:
                         colr = `bg-warning`;
-                        if(client.percentage_spent > client.percentage_month){
-                            icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
-                        }else{
-                            icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
-                        }
-                        tag = 1;
-                    }
-                    if(difference > -4 && difference < 4 && tag === 0){
-                    // aqui se debe corregir
-                    colr = `bg-danger`;
-                        if(client.percentage_spent > client.percentage_month){
-                            icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
-                        }else{
-                            icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
-                        }
-                        tag = 1;
+                            if(client.percentage_spent > client.percentage_month){
+                                icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
+                            }else{
+                                icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
+                            }
+                            break;
+                        default:
+                            colr = `bg-danger`;
+                            if(client.percentage_spent > client.percentage_month){
+                                icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
+                            }else{
+                                icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
+                            }
+                            break;
                     }
 
                     var html = `
