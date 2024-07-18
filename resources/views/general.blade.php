@@ -32,6 +32,7 @@
                 data.forEach(function(client, index) {
                     tag = 0;
                     difference = client.percentage_spent - client.percentage_month;
+                    console.log(client.client_name + ": "+difference );
 
                     if(difference > -2 && difference < 2 && tag === 0){
                         colr = `bg-primary`;
