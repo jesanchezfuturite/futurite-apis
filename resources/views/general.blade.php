@@ -30,35 +30,33 @@
 
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
+                    tag = 0;
+                    difference = client.percentage_spent - client.percentage_month;
 
-                    difference = client.percentage_month - client.percentage_spent;
-                    console.log("----------- colores");
-                    console.log("difference: " + difference);
-                    if(difference > -4 && difference < 4){
-                        // aqui se debe corregir
-                        colr = `bg-danger`;
+                    if(difference > -2 && difference < 2 && tag === 0){
+                        colr = `bg-primary`;
+                        icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
+                        tag = 1;
+                    }
+                    if(difference > -3 && difference < 3 && tag === 0){
+                        colr = `bg-warning`;
                         if(client.percentage_spent > client.percentage_month){
                             icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
                         }else{
                             icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
                         }
-                    }else{
-                        if(difference > -2 && difference < 2){
-                            // aqui esta en alerta
-                            colr = `bg-warning`;
-                            if(client.percentage_spent > client.percentage_month){
-                                icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
-                            }else{
-                                icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
-                            }
-                        }else{
-                            // aqui esta todo bien
-                            colr = `bg-primary`;
-                            icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
-                        }
-
+                        tag = 1;
                     }
-                    console.log(" colores -----------");
+                    if(difference > -4 && difference < 4 && tag === 0){
+                    // aqui se debe corregir
+                    colr = `bg-danger`;
+                        if(client.percentage_spent > client.percentage_month){
+                            icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
+                        }else{
+                            icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
+                        }
+                        tag = 1;
+                    }
 
                     var html = `
                         <div id="client-${index}" class="card card-flush h-xl-100 mb-5" >
