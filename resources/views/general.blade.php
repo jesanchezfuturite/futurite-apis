@@ -31,11 +31,26 @@
                 var clientsHtml = '';
                 data.forEach(function(client, index) {
 
+                    difference = client.percentage_month - client.percentage_spent;
+
+                    if(difference > -4 && difference < 4){
+                        // aqui se debe corregir
+                        colr = `bg-danger`;
+                    }else{
+                        if(difference > -2 && difference < 2){
+                            // aqui esta en alerta
+                            colr = `bg-warning`;
+                        }else{
+                            // aqui esta todo bien
+                            colr = `bg-primary`;
+                        }
+
+                    }
+
                     if(client.percentage_spent === client.percentage_month){
                         icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
-                        colr = `bg-primary`;
                     }else{
-                        colr = `bg-danger`;
+
                         if(client.percentage_spent > client.percentage_month){
                             icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
                         }else{
