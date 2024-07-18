@@ -36,26 +36,26 @@
                     if(difference > -4 && difference < 4){
                         // aqui se debe corregir
                         colr = `bg-danger`;
-                    }else{
-                        if(difference > -2 && difference < 2){
-                            // aqui esta en alerta
-                            colr = `bg-warning`;
-                        }else{
-                            // aqui esta todo bien
-                            colr = `bg-primary`;
-                        }
-
-                    }
-
-                    if(client.percentage_spent === client.percentage_month){
-                        icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
-                    }else{
-
                         if(client.percentage_spent > client.percentage_month){
                             icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
                         }else{
                             icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
                         }
+                    }else{
+                        if(difference > -2 && difference < 2){
+                            // aqui esta en alerta
+                            colr = `bg-warning`;
+                            if(client.percentage_spent > client.percentage_month){
+                                icon = `<i class="las la-angle-double-up fs-2x text-white"></i>`;
+                            }else{
+                                icon = `<i class="las la-angle-double-down fs-2x text-white"></i>`;
+                            }
+                        }else{
+                            // aqui esta todo bien
+                            colr = `bg-primary`;
+                            icon = `<i class="las la-thumbs-up fs-2x text-white"></i>`;
+                        }
+
                     }
 
 
