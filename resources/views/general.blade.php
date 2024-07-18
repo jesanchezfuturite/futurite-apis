@@ -32,7 +32,8 @@
                 data.forEach(function(client, index) {
 
                     difference = client.percentage_month - client.percentage_spent;
-
+                    console.log("----------- colores");
+                    console.log("difference: " + difference);
                     if(difference > -4 && difference < 4){
                         // aqui se debe corregir
                         colr = `bg-danger`;
@@ -57,7 +58,7 @@
                         }
 
                     }
-
+                    console.log(" colores -----------");
 
                     var html = `
                         <div id="client-${index}" class="card card-flush h-xl-100 mb-5" >
