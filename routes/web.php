@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\AdsController;
+use App\Http\Controllers\AtcController;
 use App\Http\Controllers\GoogleAdsController;
 use App\Http\Controllers\GoogleController;
 /*
@@ -46,3 +47,7 @@ Route::get('/ads/client-stats-json', [AdsController::class, 'getClientStats']);
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 
+
+
+/*ruta atc*/
+Route::post('/atc/hook', [AtcController::class, 'processData']);

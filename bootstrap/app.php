@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Excluir rutas específicas de la verificación CSRF
+        $middleware->validateCsrfTokens(except: [
+            'atc/hook', // Excluye todas las rutas que empiecen con /stripe/
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
