@@ -10,7 +10,6 @@ use Google\Ads\GoogleAds\V18\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
 use Log;
 
-
 // Repositories
 use App\Repositories\CustomersRepositoryEloquent;
 use App\Repositories\CampaignsRepositoryEloquent;
@@ -32,25 +31,30 @@ class ListGoogleAdsCampaigns extends Command
     {
         parent::__construct();
 
-        // Cargar la configuración desde el archivo INI
-        $config = parse_ini_file(storage_path('app/google-ads/google-ads.ini'));
+        try{
+            // Cargar la configuración desde el archivo INI
+            $config = parse_ini_file(storage_path('app/google-ads/google-ads.ini'));
 
-        // Inicializar el cliente de la API de Google Ads con credenciales de la cuenta de servicio
-        $oAuth2Credential = (new OAuth2TokenBuilder())
-            ->withJsonKeyFilePath(storage_path($config['jsonKeyFilePath']))
-            ->withScopes([$config['scopes']])
-            ->withImpersonatedEmail($config['impersonatedEmail'])
-            ->build();
+            // Inicializar el cliente de la API de Google Ads con credenciales de la cuenta de servicio
+            $oAuth2Credential = (new OAuth2TokenBuilder())
+                ->withJsonKeyFilePath(storage_path($config['jsonKeyFilePath']))
+                ->withScopes([$config['scopes']])
+                ->withImpersonatedEmail($config['impersonatedEmail'])
+                ->build();
 
-        $this->googleAdsClient = (new GoogleAdsClientBuilder())
-            ->withDeveloperToken($config['developerToken'])
-            ->withOAuth2Credential($oAuth2Credential)
-            ->withLoginCustomerId($config['loginCustomerId'])
-            ->build();
+            $this->googleAdsClient = (new GoogleAdsClientBuilder())
+                ->withDeveloperToken($config['developerToken'])
+                ->withOAuth2Credential($oAuth2Credential)
+                ->withLoginCustomerId($config['loginCustomerId'])
+                ->build();
 
-        // repositories
-        $this->customerR = $customerR;
-        $this->campaignR = $campaignR;
+            // repositories
+            $this->customerR = $customerR;
+            $this->campaignR = $campaignR;
+
+        } catch (\Exception $e) {
+            Log::error("[COMMAND-ListGoogleAdsCampaigns@__construct] Exception loading configuration - " . $e->getMessage(), ['exception' => $e]);
+        }
     }
 
     public function handle()

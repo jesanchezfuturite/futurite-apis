@@ -41,26 +41,31 @@ class UpdateGoogleAdsIndicators extends Command
     {
         parent::__construct();
 
-        // Cargar la configuración desde el archivo INI
-        $config = parse_ini_file(storage_path('app/google-ads/google-ads.ini'));
+        try {
 
-        // Inicializar el cliente de la API de Google Ads con credenciales de la cuenta de servicio
-        $oAuth2Credential = (new OAuth2TokenBuilder())
-            ->withJsonKeyFilePath(storage_path($config['jsonKeyFilePath']))
-            ->withScopes([$config['scopes']])
-            ->withImpersonatedEmail($config['impersonatedEmail'])
-            ->build();
+            // Cargar la configuración desde el archivo INI
+            $config = parse_ini_file(storage_path('app/google-ads/google-ads.ini'));
 
-        $this->googleAdsClient = (new GoogleAdsClientBuilder())
-            ->withDeveloperToken($config['developerToken'])
-            ->withOAuth2Credential($oAuth2Credential)
-            ->withLoginCustomerId($config['loginCustomerId'])
-            ->build();
+            // Inicializar el cliente de la API de Google Ads con credenciales de la cuenta de servicio
+            $oAuth2Credential = (new OAuth2TokenBuilder())
+                ->withJsonKeyFilePath(storage_path($config['jsonKeyFilePath']))
+                ->withScopes([$config['scopes']])
+                ->withImpersonatedEmail($config['impersonatedEmail'])
+                ->build();
 
-        $this->customersClientsRepo = $customersClientsRepo;
-        $this->indicatorsRepo = $indicatorsRepo;
-        $this->ongoingClientesServiciosRepo = $ongoingClientesServiciosRepo;
-        $this->campaignsRepo = $campaignsRepo;
+            $this->googleAdsClient = (new GoogleAdsClientBuilder())
+                ->withDeveloperToken($config['developerToken'])
+                ->withOAuth2Credential($oAuth2Credential)
+                ->withLoginCustomerId($config['loginCustomerId'])
+                ->build();
+
+            $this->customersClientsRepo = $customersClientsRepo;
+            $this->indicatorsRepo = $indicatorsRepo;
+            $this->ongoingClientesServiciosRepo = $ongoingClientesServiciosRepo;
+            $this->campaignsRepo = $campaignsRepo;
+        } catch (\Exception $e) {
+            Log::error("[Command-UpdateGoogleAdsIndicators@__construct] Exception loading configuration - " . $e->getMessage(), ['exception' => $e]);      
+        }
     }
 
     public function handle()

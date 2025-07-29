@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AtcController extends Controller
 {
@@ -11,6 +12,8 @@ class AtcController extends Controller
     {
         // Acceder a todos los datos enviados por POST
         $allData = $request->all();
+        $contents = json_encode($allData, JSON_PRETTY_PRINT);
+        Storage::put(uniqid().'.json', $contents);
 
         // Si quieres acceder a un campo específico, por ejemplo 'nombre'
         // $nombre = $request->input('nombre');
