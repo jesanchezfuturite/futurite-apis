@@ -14,6 +14,7 @@ return new class extends Migration
 	{
 		Schema::create('atc_leads', function(Blueprint $table) {
             $table->id();
+			$table->string('contact_id')->unique();
 			$table->string('name')->nullable();
 			$table->string('email')->nullable();
 			$table->string('phone')->nullable();

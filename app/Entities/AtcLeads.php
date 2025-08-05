@@ -22,6 +22,7 @@ class AtcLeads extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
+        "contact_id",
         "name",
         "email",
         "phone",
@@ -32,6 +33,7 @@ class AtcLeads extends Model implements Transformable
         "utmTerm",
         "utmKeyword",
         "utmMatchtype",
+        "date_created",
         "fullData"
     ];
 

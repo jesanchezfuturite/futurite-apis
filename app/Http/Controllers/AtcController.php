@@ -41,10 +41,12 @@ class AtcController extends Controller
                 "date_created" => $fecha_lead->tz('America/Mexico_City')->toDateTimeString(),
                 "fullData" => $allData
             ];
-            $lead = $this->leadsRepository->create($leadData);
+
+            $lead = $this->leadsRepository->firstOrCreate(["contact_id" => $allData['contact_id']]);
+            $lead->fill($leadData)->save();
 
             return response()->json(['success' => true, 'lead_id' => $lead->id]);
-            
+
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
