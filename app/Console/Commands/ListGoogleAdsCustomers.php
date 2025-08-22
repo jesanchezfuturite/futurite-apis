@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use Google\Ads\GoogleAds\Lib\V21\GoogleAdsClient;
 use Google\Ads\GoogleAds\Lib\V21\GoogleAdsClientBuilder;
 use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
-use Google\Ads\GoogleAds\V18\Services\ListAccessibleCustomersRequest;
-use Google\Ads\GoogleAds\V18\Services\SearchGoogleAdsRequest;
+use Google\Ads\GoogleAds\V21\Services\ListAccessibleCustomersRequest;
+use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
 use Log;
 
