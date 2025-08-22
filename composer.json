@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.2",
         "google/auth": "^1.40",
-        "googleads/google-ads-php": "*",
+        "googleads/google-ads-php": "^31.0",
         "laravel/framework": "^11.9",
         "laravel/passport": "^12.0",
         "laravel/socialite": "^5.15",

@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Repositories\CustomersRepositoryEloquent;
 
 use Illuminate\Http\Request;
-use Google\Ads\GoogleAds\Lib\V16\GoogleAdsClientBuilder;
+use Google\Ads\GoogleAds\Lib\V21\GoogleAdsClientBuilder;
 use Google\Auth\OAuth2;
-use Google\Ads\GoogleAds\Util\V16\ResourceNames;
-use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
-use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsStreamRequest;
+use Google\Ads\GoogleAds\Util\V21\ResourceNames;
+use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
+use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsStreamRequest;
 
 
 
