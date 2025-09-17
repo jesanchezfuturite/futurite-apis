@@ -10,6 +10,9 @@ use Google\Ads\GoogleAds\Lib\V21\GoogleAdsClientBuilder;
 use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
+use Google\Ads\GoogleAds\V21\Enums\AdGroupAdStatusEnum\AdGroupAdStatus;
+use Google\Ads\GoogleAds\V21\Enums\ServedAssetFieldTypeEnum\ServedAssetFieldType;
+use Google\Protobuf\Internal\RepeatedField;
 
 // repositories locale
 use App\Repositories\AdscustomersclientsRepositoryEloquent;
@@ -101,13 +104,34 @@ class AdGroupController extends Controller
 
             $response = $googleAdsServiceClient->search($searchRequest);
 
-            $adGroups = [];
+            // $adGroups = [];
+            // foreach ($response->iterateAllElements() as $googleAdsRow) {
+            //     $adGroup = $googleAdsRow->getAdGroupAd();
+            //     $adGroups[] = $adGroup;
+            // }
+            $isEmptyResult = true;
             foreach ($response->iterateAllElements() as $googleAdsRow) {
-                $adGroup = $googleAdsRow->getAdGroupAd();
-                $adGroups[] = $adGroup;
+                $isEmptyResult = false;
+                $ad = $googleAdsRow->getAdGroupAd()->getAd();
+                printf(
+                    "Responsive search ad with resource name '%s' and status '%s' was found.%s",
+                    $ad->getResourceName(),
+                    AdGroupAdStatus::name($googleAdsRow->getAdGroupAd()->getStatus()),
+                    PHP_EOL
+                );
+                $responsiveSearchAdInfo = $ad->getResponsiveSearchAd();
+                printf(
+                    'Headlines:%1$s%2$sDescriptions:%1$s%3$s%1$s',
+                    PHP_EOL,
+                    self::convertAdTextAssetsToString($responsiveSearchAdInfo->getHeadlines()),
+                    self::convertAdTextAssetsToString($responsiveSearchAdInfo->getDescriptions())
+                );
+            }
+            if ($isEmptyResult) {
+                print 'No responsive search ads were found.' . PHP_EOL;
             }
 
-            return response()->json(['ad_groups' => $adGroups]);
+            return response()->json(['ad_groups' => []]);
 
         } catch (ApiException $e) {
             Log::error('Google Ads API error: ' . $e->getMessage());
@@ -117,4 +141,27 @@ class AdGroupController extends Controller
             return response()->json(['error' => 'An unexpected error occurred'], 500);
         }
     }
+
+    /**
+     * Converts the list of AdTextAsset objects into a string representation.
+     *
+     * @param RepeatedField $assets the list of AdTextAsset objects
+     * @return string the string representation of the provided list of AdTextAsset objects
+     */
+    private static function convertAdTextAssetsToString(RepeatedField $assets): string
+    {
+        $result = '';
+        foreach ($assets as $asset) {
+            $result .= sprintf(
+                "\t%s pinned to %s.%s",
+                $asset->getText(),
+                ServedAssetFieldType::name($asset->getPinnedField()),
+                PHP_EOL
+            );
+        }
+        return $result;
+    }
+
+
+
 }
