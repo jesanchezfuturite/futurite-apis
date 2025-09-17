@@ -7,6 +7,7 @@ use App\Http\Controllers\AdsController;
 use App\Http\Controllers\AtcController;
 use App\Http\Controllers\GoogleAdsController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\AdGroupController;
 /*
 Route::get('/google-ads/authenticate', [CampaignsController::class, 'authenticate'])->name('google.ads.authenticate');
 Route::get('/google-ads/callback', [CampaignsController::class, 'callback'])->name('google.ads.callback');
@@ -51,3 +52,6 @@ Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::
 
 /*ruta atc*/
 Route::post('/atc/hook', [AtcController::class, 'processData']);
+
+
+Route::get('/google-ads/ad-group-ad/{customerId}', [AdGroupController::class, 'getAdGroupsByCustomerId']);
