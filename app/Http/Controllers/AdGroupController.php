@@ -123,8 +123,8 @@ class AdGroupController extends Controller
                 printf(
                     'Headlines:%1$s%2$sDescriptions:%1$s%3$s%1$s',
                     PHP_EOL,
-                    self::convertAdTextAssetsToString($responsiveSearchAdInfo->getHeadlines()),
-                    self::convertAdTextAssetsToString($responsiveSearchAdInfo->getDescriptions())
+                    self::convertAdTextAssetsToString(!is_null($responsiveSearchAdInfo) ? $responsiveSearchAdInfo->getHeadlines() : []),
+                    self::convertAdTextAssetsToString(!is_null($responsiveSearchAdInfo) ? $responsiveSearchAdInfo->getDescriptions() : [])
                 );
             }
             if ($isEmptyResult) {
