@@ -110,6 +110,7 @@ class AdGroupController extends Controller
             //     $adGroups[] = $adGroup;
             // }
             $isEmptyResult = true;
+            echo '<pre>';
             foreach ($response->iterateAllElements() as $googleAdsRow) {
                 $isEmptyResult = false;
                 $ad = $googleAdsRow->getAdGroupAd()->getAd();
