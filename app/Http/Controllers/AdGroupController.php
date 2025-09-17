@@ -96,7 +96,7 @@ class AdGroupController extends Controller
             $searchRequest = new SearchGoogleAdsRequest([
                 'customer_id' => $customerId,
                 'query' => $query,
-                'page_size' => 1000
+                // 'page_size' => 1000
             ]);
 
             $response = $googleAdsServiceClient->search($searchRequest);
